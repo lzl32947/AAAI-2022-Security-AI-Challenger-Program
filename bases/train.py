@@ -14,7 +14,7 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from PIL import Image
-from config import args_resnet, args_densenet
+from configs.config import args_resnet, args_densenet
 from utils import load_model, AverageMeter, accuracy
 
 # Use CUDA
@@ -29,16 +29,17 @@ torch.backends.cudnn.deterministic = True
 
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, transform):
-        images = np.load('data.npy')
-        labels = np.load('label.npy')
+        images = np.load('../dataset/data.npy')
+        labels = np.load('../dataset/label.npy')
         assert labels.min() >= 0
         assert images.dtype == np.uint8
         assert images.shape[0] <= 50000
         assert images.shape[1:] == (32, 32, 3)
         self.images = [Image.fromarray(x) for x in images]
-        self.labels = labels / labels.sum(axis=1, keepdims=True) # normalize
+        self.labels = labels / labels.sum(axis=1, keepdims=True)  # normalize
         self.labels = self.labels.astype(np.float32)
         self.transform = transform
+
     def __getitem__(self, index):
         image, label = self.images[index], self.labels[index]
         image = self.transform(image)

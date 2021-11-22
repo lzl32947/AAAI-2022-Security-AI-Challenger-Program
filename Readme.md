@@ -8,4 +8,4 @@ The files in ```base``` directory is the original directory for baseline files, 
 
 These files should not be modified to overwrite the logic and running procedures.
 
-Original ```Readme``` can be found in [here](bases/README.md).
+Original ```Readme``` can be found in [here](doc/README.md).
