@@ -6,7 +6,7 @@ from typing import Dict
 
 import yaml
 
-from util.log.logger import GlobalLogger
+from util.logger.logger import GlobalLogger
 
 
 def read_config(config_path: str) -> Dict:
@@ -53,7 +53,7 @@ def set_ignore_warning(close: bool) -> None:
 
 def parse_opt():
     parser = argparse.ArgumentParser(description='Options')
-    parser.add_argument('--log_name', type=str, help='The name of the log')
+    parser.add_argument('--log_name', type=str, help='The name of the logger')
     parser.add_argument('--data_train', type=str, help='The path to input directory')
     parser.add_argument('--data_eval', type=str, help='The path to evaluation directory')
     parser.add_argument('--output_checkpoint', type=str, help='The path to evaluation directory', default="checkpoint")
@@ -71,10 +71,11 @@ def global_init():
     run_time = time.strftime("%Y%m%d_%H%M%S", time.localtime())
     if 'warning' in config.keys():
         set_ignore_warning(config['warning']['ignore'])
-    create_dir(config['log']['log_dir'], config["runtime"]["log_name"], run_time)
-    GlobalLogger().init_config(config=config['log'], store_name=os.path.join(config["runtime"]["log_name"], run_time))
+    create_dir(config['logger']['log_dir'], config["runtime"]["log_name"], run_time)
+    GlobalLogger().init_config(config=config['logger'],
+                               store_name=os.path.join(config["runtime"]["log_name"], run_time))
     GlobalLogger().get_logger().info("Running with identifier {}".format(run_time))
-    GlobalLogger().get_logger().info("Saving log to {}".format(
-        os.path.join(config['log']['log_dir'], config["runtime"]["log_name"], run_time, "run.log")))
+    GlobalLogger().get_logger().info("Saving logger to {}".format(
+        os.path.join(config['logger']['log_dir'], config["runtime"]["log_name"], run_time, "run.logger")))
     create_dir(config['runtime']['output_checkpoint'], config["runtime"]["log_name"], run_time)
     return config, run_time

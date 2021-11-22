@@ -3,7 +3,7 @@ import os.path
 import time
 
 from bases.train import train
-from util.log.logger import GlobalLogger
+from util.logger.logger import GlobalLogger
 from util.tools.file_util import global_init
 
 if __name__ == '__main__':

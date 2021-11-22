@@ -15,7 +15,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from PIL import Image
 from configs.train_config import args_resnet, args_densenet
-from util.log.logger import GlobalLogger
+from util.logger.logger import GlobalLogger
 from bases.utils import load_model, AverageMeter, accuracy
 
 # Use CUDA
