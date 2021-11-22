@@ -1,3 +1,3 @@
-from models.resnet import *
-from models.densenet import *
-from models.wideresnet import wideresnet
+from bases.models.resnet import *
+from bases.models.densenet import *
+from bases.models.wideresnet import wideresnet

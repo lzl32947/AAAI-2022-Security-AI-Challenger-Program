@@ -18,7 +18,8 @@ class BasicBlock(nn.Module):
         self.droprate = dropRate
         self.equalInOut = (in_planes == out_planes)
         self.convShortcut = (not self.equalInOut) and nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride,
-                               padding=0, bias=False) or None
+                                                                padding=0, bias=False) or None
+
     def forward(self, x):
         if not self.equalInOut:
             x = self.relu1(self.bn1(x))
@@ -30,23 +31,27 @@ class BasicBlock(nn.Module):
         out = self.conv2(out)
         return torch.add(x if self.equalInOut else self.convShortcut(x), out)
 
+
 class NetworkBlock(nn.Module):
     def __init__(self, nb_layers, in_planes, out_planes, block, stride, dropRate=0.0):
         super(NetworkBlock, self).__init__()
         self.layer = self._make_layer(block, in_planes, out_planes, nb_layers, stride, dropRate)
+
     def _make_layer(self, block, in_planes, out_planes, nb_layers, stride, dropRate):
         layers = []
         for i in range(int(nb_layers)):
             layers.append(block(i == 0 and in_planes or out_planes, out_planes, i == 0 and stride or 1, dropRate))
         return nn.Sequential(*layers)
+
     def forward(self, x):
         return self.layer(x)
+
 
 class WideResNet(nn.Module):
     def __init__(self, depth, num_classes, widen_factor=1, dropRate=0.0, return_out=False):
         super(WideResNet, self).__init__()
-        nChannels = [16, 16*widen_factor, 32*widen_factor, 64*widen_factor]
-        assert((depth - 4) % 6 == 0)
+        nChannels = [16, 16 * widen_factor, 32 * widen_factor, 64 * widen_factor]
+        assert ((depth - 4) % 6 == 0)
         n = (depth - 4) / 6
         block = BasicBlock
         self.return_out = return_out
@@ -87,11 +92,12 @@ class WideResNet(nn.Module):
         else:
             return self.fc(out)
 
+
 class WideResNet_twobranch_DenseV1(nn.Module):
     def __init__(self, depth, num_classes, widen_factor=1, dropRate=0.0, along=False, use_BN=False, out_dim=10):
         super(WideResNet_twobranch_DenseV1, self).__init__()
-        nChannels = [16, 16*widen_factor, 32*widen_factor, 64*widen_factor]
-        assert((depth - 4) % 6 == 0)
+        nChannels = [16, 16 * widen_factor, 32 * widen_factor, 64 * widen_factor]
+        assert ((depth - 4) % 6 == 0)
         n = (depth - 4) / 6
         block = BasicBlock
         # 1st conv before any network block
@@ -112,19 +118,18 @@ class WideResNet_twobranch_DenseV1(nn.Module):
         self.along = along
         if use_BN:
             self.dense = nn.Sequential(
-                nn.Linear(64*widen_factor, 32*widen_factor),
-                nn.BatchNorm1d(32*widen_factor),
+                nn.Linear(64 * widen_factor, 32 * widen_factor),
+                nn.BatchNorm1d(32 * widen_factor),
                 nn.ReLU(),
-                nn.Linear(32*widen_factor, out_dim)
-                )
+                nn.Linear(32 * widen_factor, out_dim)
+            )
             print('with BN')
         else:
             self.dense = nn.Sequential(
-                nn.Linear(64*widen_factor, 32*widen_factor),
+                nn.Linear(64 * widen_factor, 32 * widen_factor),
                 nn.ReLU(),
-                nn.Linear(32*widen_factor, out_dim)
-                )
-
+                nn.Linear(32 * widen_factor, out_dim)
+            )
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -134,7 +139,7 @@ class WideResNet_twobranch_DenseV1(nn.Module):
                 m.bias.data.zero_()
             elif isinstance(m, nn.Linear):
                 m.bias.data.zero_()
-                
+
     def forward(self, x):
         out = self.conv1(x)
         out = self.block1(out)
@@ -147,14 +152,15 @@ class WideResNet_twobranch_DenseV1(nn.Module):
         if self.along:
             evidence_return = self.dense(out)
         else:
-            evidence_return = classification_return + self.dense(out)  
+            evidence_return = classification_return + self.dense(out)
         return classification_return, evidence_return
+
 
 class WideResNet_threebranch_DenseV1(nn.Module):
     def __init__(self, depth, num_classes, widen_factor=1, dropRate=0.0, along=False, use_BN=False, out_dim=10):
         super(WideResNet_threebranch_DenseV1, self).__init__()
-        nChannels = [16, 16*widen_factor, 32*widen_factor, 64*widen_factor]
-        assert((depth - 4) % 6 == 0)
+        nChannels = [16, 16 * widen_factor, 32 * widen_factor, 64 * widen_factor]
+        assert ((depth - 4) % 6 == 0)
         n = (depth - 4) / 6
         block = BasicBlock
         # 1st conv before any network block
@@ -176,19 +182,18 @@ class WideResNet_threebranch_DenseV1(nn.Module):
         self.along = along
         if use_BN:
             self.dense = nn.Sequential(
-                nn.Linear(64*widen_factor, 32*widen_factor),
-                nn.BatchNorm1d(32*widen_factor),
+                nn.Linear(64 * widen_factor, 32 * widen_factor),
+                nn.BatchNorm1d(32 * widen_factor),
                 nn.ReLU(),
-                nn.Linear(32*widen_factor, out_dim)
-                )
+                nn.Linear(32 * widen_factor, out_dim)
+            )
             print('with BN')
         else:
             self.dense = nn.Sequential(
-                nn.Linear(64*widen_factor, 32*widen_factor),
+                nn.Linear(64 * widen_factor, 32 * widen_factor),
                 nn.ReLU(),
-                nn.Linear(32*widen_factor, out_dim)
-                )
-
+                nn.Linear(32 * widen_factor, out_dim)
+            )
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -198,7 +203,7 @@ class WideResNet_threebranch_DenseV1(nn.Module):
                 m.bias.data.zero_()
             elif isinstance(m, nn.Linear):
                 m.bias.data.zero_()
-                
+
     def forward(self, x):
         out = self.conv1(x)
         out = self.block1(out)
@@ -212,7 +217,9 @@ class WideResNet_threebranch_DenseV1(nn.Module):
         if self.along:
             evidence_return = self.dense(out)
         else:
-            evidence_return = classification_return + self.dense(out)  
-        return classification_return, evidence_return, aux_return        
+            evidence_return = classification_return + self.dense(out)
+        return classification_return, evidence_return, aux_return
+
+
 def wideresnet():
     return WideResNet(34, 10, 10, 0.0)

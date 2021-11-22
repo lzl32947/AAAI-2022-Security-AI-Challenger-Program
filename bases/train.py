@@ -14,8 +14,9 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from PIL import Image
-from configs.config import args_resnet, args_densenet
-from utils import load_model, AverageMeter, accuracy
+from configs.train_config import args_resnet, args_densenet
+from util.log.logger import GlobalLogger
+from bases.utils import load_model, AverageMeter, accuracy
 
 # Use CUDA
 use_cuda = torch.cuda.is_available()
@@ -28,9 +29,9 @@ torch.backends.cudnn.deterministic = True
 
 
 class MyDataset(torch.utils.data.Dataset):
-    def __init__(self, transform):
-        images = np.load('../dataset/data.npy')
-        labels = np.load('../dataset/label.npy')
+    def __init__(self, transform, path):
+        images = np.load(os.path.join(path, 'data.npy'))
+        labels = np.load(os.path.join(path, 'label.npy'))
         assert labels.min() >= 0
         assert images.dtype == np.uint8
         assert images.shape[0] <= 50000
@@ -44,15 +45,17 @@ class MyDataset(torch.utils.data.Dataset):
         image, label = self.images[index], self.labels[index]
         image = self.transform(image)
         return image, label
+
     def __len__(self):
         return len(self.labels)
 
-def cross_entropy(outputs, smooth_labels):
+
+def _cross_entropy(outputs, smooth_labels):
     loss = torch.nn.KLDivLoss(reduction='batchmean')
     return loss(F.log_softmax(outputs, dim=1), smooth_labels)
 
-def main():
 
+def train(dataset_path: str, checkpoint_path: str):
     for arch in ['resnet50', 'densenet121']:
         if arch == 'resnet50':
             args = args_resnet
@@ -66,7 +69,7 @@ def main():
             transforms.ToTensor(),
             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
-        trainset = MyDataset(transform=transform_train)
+        trainset = MyDataset(transform=transform_train, path=dataset_path)
         trainloader = data.DataLoader(trainset, batch_size=args['batch_size'], shuffle=True, num_workers=4)
         # Model
 
@@ -74,35 +77,35 @@ def main():
         best_acc = 0  # best test accuracy
 
         optimizer = optim.__dict__[args['optimizer_name']](model.parameters(),
-            **args['optimizer_hyperparameters'])
-        if args['scheduler_name'] != None:
+                                                           **args['optimizer_hyperparameters'])
+        if args['scheduler_name'] is not None:
             scheduler = torch.optim.lr_scheduler.__dict__[args['scheduler_name']](optimizer,
-            **args['scheduler_hyperparameters'])
+                                                                                  **args['scheduler_hyperparameters'])
         model = model.cuda()
-        # Train and val
-        for epoch in tqdm(range(args['epochs'])):
 
-            train_loss, train_acc = train(trainloader, model, optimizer)
-            print(args)
-            print('acc: {}'.format(train_acc))
+        GlobalLogger().get_logger().debug("{}".format(args).replace("\n", " "))
+        # Train
+        for epoch in tqdm(range(args['epochs'])):
+            train_loss, train_acc = _train(trainloader, model, optimizer)
+            GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
 
             # save model
             best_acc = max(train_acc, best_acc)
-            save_checkpoint({
-                    'epoch': epoch + 1,
-                    'state_dict': model.state_dict(),
-                    'acc': train_acc,
-                    'best_acc': best_acc,
-                    'optimizer' : optimizer.state_dict(),
-                }, arch=arch)
-            if args['scheduler_name'] != None:
+            _save_checkpoint({
+                'epoch': epoch + 1,
+                'state_dict': model.state_dict(),
+                'acc': train_acc,
+                'best_acc': best_acc,
+                'optimizer': optimizer.state_dict(),
+            }, arch=arch, path=checkpoint_path)
+
+            if args['scheduler_name'] is not None:
                 scheduler.step()
 
-        print('Best acc:')
-        print(best_acc)
+        GlobalLogger().get_logger().info("Best acc in training: {:.2f}".format(best_acc))
 
 
-def train(trainloader, model, optimizer):
+def _train(trainloader, model, optimizer):
     losses = AverageMeter()
     accs = AverageMeter()
     model.eval()
@@ -113,7 +116,7 @@ def train(trainloader, model, optimizer):
         inputs, soft_labels = inputs.cuda(), soft_labels.cuda()
         targets = soft_labels.argmax(dim=1)
         outputs = model(inputs)
-        loss = cross_entropy(outputs, soft_labels)
+        loss = _cross_entropy(outputs, soft_labels)
         acc = accuracy(outputs, targets)
         optimizer.zero_grad()
         loss.backward()
@@ -122,9 +125,7 @@ def train(trainloader, model, optimizer):
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg
 
-def save_checkpoint(state, arch):
-    filepath = os.path.join(arch + '.pth.tar')
-    torch.save(state, filepath)
 
-if __name__ == '__main__':
-    main()
+def _save_checkpoint(state, arch, path):
+    filepath = os.path.join(path, arch + '.pth.tar')
+    torch.save(state, filepath)
