@@ -3,6 +3,9 @@ from __future__ import print_function
 import os
 import random
 import shutil
+from argparse import Namespace
+from typing import Dict
+
 from tqdm import tqdm
 
 import numpy as np
@@ -43,7 +46,8 @@ class MyDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         image, label = self.images[index], self.labels[index]
-        image = self.transform(image)
+        if self.transform is not None:
+            image = self.transform(image)
         return image, label
 
     def __len__(self):
@@ -55,7 +59,9 @@ def _cross_entropy(outputs, smooth_labels):
     return loss(F.log_softmax(outputs, dim=1), smooth_labels)
 
 
-def train(dataset_path: str, checkpoint_path: str):
+def train(opt: Namespace, identifier: str):
+    dataset_path = opt.data_train
+    checkpoint_path = os.path.join(opt.output_checkpoint_dir, opt.log_name, identifier)
     for arch in ['resnet50', 'densenet121']:
         if arch == 'resnet50':
             args = args_resnet
@@ -83,7 +89,7 @@ def train(dataset_path: str, checkpoint_path: str):
                                                                                   **args['scheduler_hyperparameters'])
         model = model.cuda()
 
-        GlobalLogger().get_logger().debug("{}".format(args).replace("\n", " "))
+        GlobalLogger().get_logger().debug("Using config: {}".format(args).replace("\n", " "))
         # Train
         for epoch in tqdm(range(args['epochs'])):
             train_loss, train_acc = _train(trainloader, model, optimizer)
@@ -103,6 +109,7 @@ def train(dataset_path: str, checkpoint_path: str):
                 scheduler.step()
 
         GlobalLogger().get_logger().info("Best acc in training: {:.2f}".format(best_acc))
+        return best_acc
 
 
 def _train(trainloader, model, optimizer):
@@ -121,6 +128,45 @@ def _train(trainloader, model, optimizer):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        losses.update(loss.item(), inputs.size(0))
+        accs.update(acc[0].item(), inputs.size(0))
+    return losses.avg, accs.avg
+
+
+def evaluate(dataset_path: str, weight_path: str):
+    for arch in ['resnet50', 'densenet121']:
+        if arch == 'resnet50':
+            args = args_resnet
+        else:
+            args = args_densenet
+        # Data
+        testset = MyDataset(transform=None, path=dataset_path)
+        testdataloader = data.DataLoader(testset, batch_size=args['batch_size'], shuffle=True, num_workers=4)
+        # Model
+
+        model = load_model(arch)
+        model.load_state_dict(torch.load(weight_path))
+
+        model = model.cuda()
+
+        GlobalLogger().get_logger().debug("Using config: {}".format(args).replace("\n", " "))
+        # Train
+        test_loss, test_acc = _eval(testdataloader, model)
+
+        GlobalLogger().get_logger().info("Average acc in test: {:.2f}%".format(test_acc * 100))
+        GlobalLogger().get_logger().info("Average loss in test: {:.4f}".format(test_loss))
+
+
+def _eval(testdataloader, model):
+    losses = AverageMeter()
+    accs = AverageMeter()
+    model.eval()
+    for (inputs, soft_labels) in testdataloader:
+        inputs, soft_labels = inputs.cuda(), soft_labels.cuda()
+        targets = soft_labels.argmax(dim=1)
+        outputs = model(inputs)
+        loss = _cross_entropy(outputs, soft_labels)
+        acc = accuracy(outputs, targets)
         losses.update(loss.item(), inputs.size(0))
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg

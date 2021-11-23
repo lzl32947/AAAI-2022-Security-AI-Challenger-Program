@@ -13,11 +13,11 @@ Original ```Readme``` can be found in [here](doc/README.md).
 
 ## Run baseline
 
-The main script of the project is ```main.py```, and the parsed args can be found at ```util/tools/file_util.py```(
-click [here](util/tools/file_util.py))
+The main script of the project is ```main.py```, and the parsed args can be found at ```util/tools/args_util.py```(
+click [here](util/tools/args_util.py))
 
 Typically, can run the following commands:
 
 ```shell
-python main.py --log_name base --data_train dataset --output_checkpoint checkpoint
+python main.py --log_name base --data_train dataset/baseline --data_eval dataset/baseline --output_checkpoint checkpoint
 ```

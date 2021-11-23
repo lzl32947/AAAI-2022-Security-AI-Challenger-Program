@@ -2,7 +2,6 @@ import logging
 import threading
 from typing import Dict
 import os
-import time
 
 
 class GlobalLogger(object):
@@ -16,8 +15,8 @@ class GlobalLogger(object):
         # Check the attr in __init__ for not initializing the parameters in re-creating the instance
         if not hasattr(self, "log"):
             self.log = None
-        if not hasattr(self, "config"):
-            self.config = None
+        if not hasattr(self, "log_path"):
+            self.log_path = None
         if not hasattr(self, "log_name"):
             self.log_name = None
 
@@ -36,17 +35,10 @@ class GlobalLogger(object):
         """
         return self.log
 
-    def get_config(self) -> Dict:
-        """
-        Return the configuration of logger.
-        :return: Dict, config files of the logger
-        """
-        return self.config
-
-    def init_config(self, config: Dict, store_name: str) -> None:
+    def init_config(self, log_path: str, store_name: str) -> None:
         """
         Init the logger with the given parameters.
-        :param config: Dict, the configs
+        :param log_path: str, the path to log
         :param store_name: str, the name of the saving name
         :return: None
         """
@@ -54,7 +46,7 @@ class GlobalLogger(object):
         self.log = logging.getLogger("main")
         # Set logger level
         self.log.setLevel(logging.DEBUG)
-        self.config = config
+        self.log_path = log_path
         self.log_name = store_name
         # Init the console logger
         ch = logging.StreamHandler()
@@ -62,8 +54,8 @@ class GlobalLogger(object):
         formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
         ch.setFormatter(formatter)
         self.log.addHandler(ch)
-        # Init the tools logger
-        fh = logging.FileHandler(os.path.join(self.config['log_dir'], self.log_name, "run.log"), mode="w")
+        # Init the file log
+        fh = logging.FileHandler(os.path.join(self.log_path, self.log_name, "run.log"), mode="w")
         fh.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
         fh.setFormatter(formatter)

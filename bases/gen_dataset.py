@@ -14,5 +14,5 @@ for image, label in dataset:
 images = np.array(images)
 soft_labels = np.array(soft_labels)
 print(images.shape, images.dtype, soft_labels.shape, soft_labels.dtype)
-np.save('../dataset/data.npy', images)
-np.save('../dataset/label.npy', soft_labels)
+np.save('../dataset/baseline/data.npy', images)
+np.save('../dataset/baseline/label.npy', soft_labels)

@@ -1,5 +1,0 @@
-warning:
-  ignore: true
-
-log:
-  log_dir: "log"
