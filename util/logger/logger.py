@@ -14,7 +14,7 @@ class GlobalLogger(object):
 
     def __init__(self) -> None:
         # Check the attr in __init__ for not initializing the parameters in re-creating the instance
-        if not hasattr(self, "logger"):
+        if not hasattr(self, "log"):
             self.log = None
         if not hasattr(self, "config"):
             self.config = None
@@ -63,7 +63,7 @@ class GlobalLogger(object):
         ch.setFormatter(formatter)
         self.log.addHandler(ch)
         # Init the tools logger
-        fh = logging.FileHandler(os.path.join(self.config['log_dir'], self.log_name, "run.logger"), mode="w")
+        fh = logging.FileHandler(os.path.join(self.config['log_dir'], self.log_name, "run.log"), mode="w")
         fh.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
         fh.setFormatter(formatter)

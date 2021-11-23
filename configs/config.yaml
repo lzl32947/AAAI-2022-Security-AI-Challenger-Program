@@ -2,4 +2,4 @@ warning:
   ignore: true
 
 log:
-  log_dir: "logger"
+  log_dir: "log"
