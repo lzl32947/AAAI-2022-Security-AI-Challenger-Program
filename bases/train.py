@@ -67,6 +67,7 @@ def train(opt: Namespace, identifier: str):
     #######################
     # Modified by adding the two paths
     dataset_path = opt.data_train
+    dataset_eval = opt.data_eval
     checkpoint_path = os.path.join(opt.output_checkpoint_dir, opt.log_name, identifier)
     # End modify
     #######################
@@ -85,6 +86,15 @@ def train(opt: Namespace, identifier: str):
         ])
         trainset = MyDataset(transform=transform_train, path=dataset_path)
         trainloader = data.DataLoader(trainset, batch_size=args['batch_size'], shuffle=True, num_workers=4)
+
+        #######################
+        # Modified by adding the two paths
+        evalloader = None
+        if dataset_eval is not None and dataset_eval != "":
+            evalset = MyDataset(transform=None, path=dataset_eval)
+            evalloader = data.DataLoader(evalset, batch_size=args['batch_size'], shuffle=False, num_workers=4)
+        # End modify
+        #######################
         # Model
 
         model = load_model(arch)
@@ -102,9 +112,18 @@ def train(opt: Namespace, identifier: str):
         for epoch in tqdm(range(args['epochs'])):
             train_loss, train_acc = _train(trainloader, model, optimizer)
             GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
+            #######################
+            # Modified by adding the two paths
+            if opt.eval_per_epoch > 0 and evalloader is not None:
+                if (epoch + 1) % opt.eval_per_epoch == 0:
+                    eval_loss, eval_acc = _eval(model, evalloader)
+                    best_acc = max(eval_acc, best_acc)
+            else:
+                # End modify
+                #######################
 
-            # save model
-            best_acc = max(train_acc, best_acc)
+                # save model
+                best_acc = max(train_acc, best_acc)
             _save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
@@ -123,7 +142,6 @@ def train(opt: Namespace, identifier: str):
 def _train(trainloader, model, optimizer):
     losses = AverageMeter()
     accs = AverageMeter()
-    model.eval()
     # switch to train mode
     model.train()
 
@@ -139,6 +157,7 @@ def _train(trainloader, model, optimizer):
         losses.update(loss.item(), inputs.size(0))
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg
+
 
 #######################
 # Modified by adding the following functions
@@ -179,6 +198,8 @@ def _eval(testdataloader, model):
         losses.update(loss.item(), inputs.size(0))
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg
+
+
 # End Modify
 #######################
 
