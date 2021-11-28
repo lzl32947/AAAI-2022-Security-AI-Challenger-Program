@@ -2,7 +2,7 @@
 # Modifies should be commented
 
 args_resnet = {
-    'epochs': 50,  # 200 for original
+    'epochs': 200,  # 200 for original
     'optimizer_name': 'SGD',
     'optimizer_hyperparameters': {
         'lr': 0.1,

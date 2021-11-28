@@ -101,6 +101,7 @@ def train(opt: Namespace, identifier: str):
         if dataset_eval is not None and dataset_eval != "":
             evalset = MyDataset(transform=None, path=dataset_eval)
             evalloader = data.DataLoader(evalset, batch_size=args['batch_size'], shuffle=False, num_workers=4)
+        best_eval = 0
         # End modify
         #######################
         # Model
@@ -127,13 +128,12 @@ def train(opt: Namespace, identifier: str):
                     eval_loss, eval_acc = _eval(evalloader, model)
                     GlobalLogger().get_logger().info(
                         "Epoch {} with acc in evaluation: {:.2f}".format(epoch + 1, eval_acc))
-                    best_acc = max(eval_acc, best_acc)
-            else:
-                # End modify
-                #######################
+                    best_eval = max(eval_acc, best_eval)
+            # End modify
+            #######################
 
-                # save model
-                best_acc = max(train_acc, best_acc)
+            # save model
+            best_acc = max(train_acc, best_acc)
             _save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
@@ -145,8 +145,10 @@ def train(opt: Namespace, identifier: str):
             if args['scheduler_name'] is not None:
                 scheduler.step()
 
-        GlobalLogger().get_logger().info("Best acc in evaluation: {:.2f}".format(best_acc))
-        best_acc_list[arch] = best_acc
+        GlobalLogger().get_logger().info("Best acc in training: {:.2f}".format(best_acc))
+        if best_eval > 0:
+            GlobalLogger().get_logger().info("Best acc in evaluation: {:.2f}".format(best_eval))
+        best_acc_list[arch] = {"train": best_acc, "test": best_eval} if best_eval > 0 else {"train": best_acc}
     return best_acc_list
 
 
