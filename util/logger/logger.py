@@ -60,3 +60,7 @@ class GlobalLogger(object):
         formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
         fh.setFormatter(formatter)
         self.log.addHandler(fh)
+
+    def close(self):
+        if self.log is not None:
+            logging.shutdown()

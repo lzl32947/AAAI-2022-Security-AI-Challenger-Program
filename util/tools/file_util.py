@@ -1,3 +1,4 @@
+import argparse
 import os
 import shutil
 import warnings
@@ -51,8 +52,10 @@ def set_ignore_warning(close: bool) -> None:
         warnings.filterwarnings("ignore")
 
 
-# NOT TESTED!
 def remove_dir(*target):
+    """
+    Delete all files in the directory and then delete the directory
+    """
     try:
         if not os.path.exists(os.path.join(*target)):
             return True
@@ -60,7 +63,7 @@ def remove_dir(*target):
             files = os.path.join(*target)
             if os.path.islink(files):
                 os.remove(files)
-            elif os.path.isdir(files):
+            elif os.path.isfile(files):
                 os.remove(files)
             elif os.path.isdir(files):
                 shutil.rmtree(files)
@@ -78,24 +81,38 @@ def remove_dir(*target):
                             break
                     else:
                         break
-    except IOError:
-        GlobalLogger().get_logger().error("Unable to delete {}".format(os.path.join(*target)))
+    except IOError as e:
+        GlobalLogger().get_logger().error("Unable to delete {} with error {}".format(os.path.join(*target), e))
 
 
-# NOT TESTED
-def rename_file(target, *source):
+def rename_file(target: str, *source: str):
+    """
+    Rename files to the target name
+    """
     try:
         if len(source) > 1:
-            os.rename(os.path.join(*source), os.path.join(*source[:-1], target))
+            shutil.move(os.path.join(*source), os.path.join(*source[:-1], target))
         else:
-            os.rename(*source, target)
-    except IOError:
-        GlobalLogger().get_logger().error("Unable to rename {} to {}".format(os.path.join(*source),
-                                                                             os.path.join(*source[:-1], target) if len(
-                                                                                 source) > 1 else target))
+            shutil.move(*source, target)
+    except IOError as e:
+        print("Unable to rename {} to {} with error {}".format(os.path.join(*source),
+                                                               os.path.join(*source[:-1],
+                                                                            target) if len(
+                                                                   source) > 1 else target,
+                                                               e))
 
 
-# NOT TESTED
-def clear_error(opt, run_time, error_name):
+def on_finish(opt, runtime: str):
+    shutil.copy2(os.path.join("configs", "train_config.py"), os.path.join(opt.log_dir, opt.log_name, runtime))
+
+
+def on_error(opt: argparse.Namespace, run_time: str, error_name: str):
+    """
+    Remove all output of a failed runtime
+    """
+    # Remove all files in checkpoints, mainly weight files
     remove_dir(opt.output_checkpoint_dir, opt.log_name, run_time)
+    # Close logging module
+    GlobalLogger().close()
+    # Remove the log output
     rename_file(run_time + "_" + error_name, opt.log_dir, opt.log_name, run_time)

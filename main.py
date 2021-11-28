@@ -5,7 +5,7 @@ import time
 from bases.train import train
 from util.logger.logger import GlobalLogger
 from util.tools.args_util import parse_opt
-from util.tools.file_util import clear_error, read_config, set_ignore_warning, create_dir
+from util.tools.file_util import on_error, read_config, set_ignore_warning, create_dir, on_finish
 
 
 def global_init() -> (argparse.Namespace, str):
@@ -24,6 +24,7 @@ def global_init() -> (argparse.Namespace, str):
     GlobalLogger().get_logger().info("Running with identifier {}".format(run_time))
     GlobalLogger().get_logger().info("Saving log to {}".format(
         os.path.join(opt.log_dir, opt.log_name, run_time, "run.log")))
+    GlobalLogger().get_logger().info("Using args: {}".format([(i,vars(opt)[i]) for i in vars(opt).keys()]))
     # Create for checkpoint
     create_dir(opt.output_checkpoint_dir, opt.log_name, run_time)
     return opt, run_time
@@ -33,9 +34,11 @@ if __name__ == '__main__':
     args, identifier = global_init()
     try:
         train(args, identifier)
+        on_finish(args, identifier)
     except Exception as e:
         GlobalLogger().get_logger().error(e)
-        clear_error(args, identifier, "fail")
+        on_error(args, identifier, "fail")
+        raise e
     except KeyboardInterrupt as k:
         GlobalLogger().get_logger().info("Keyboard Interrupt")
-        clear_error(args, identifier, "interrupt")
+        on_error(args, identifier, "interrupt")

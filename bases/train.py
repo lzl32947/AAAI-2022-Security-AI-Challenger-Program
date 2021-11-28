@@ -50,6 +50,12 @@ class MyDataset(torch.utils.data.Dataset):
         # Modified by adding None options
         if self.transform is not None:
             image = self.transform(image)
+        else:
+            self.transform = transforms.Compose([
+                transforms.ToTensor(),
+                transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+            ])
+            image = self.transform(image)
         # End modified
         #######################
         return image, label
@@ -69,9 +75,11 @@ def train(opt: Namespace, identifier: str):
     dataset_path = opt.data_train
     dataset_eval = opt.data_eval
     checkpoint_path = os.path.join(opt.output_checkpoint_dir, opt.log_name, identifier)
+    best_acc_list = dict()
     # End modify
     #######################
     for arch in ['resnet50', 'densenet121']:
+        GlobalLogger().get_logger().info("Running model {}".format(arch))
         if arch == 'resnet50':
             args = args_resnet
         else:
@@ -116,7 +124,9 @@ def train(opt: Namespace, identifier: str):
             # Modified by adding the two paths
             if opt.eval_per_epoch > 0 and evalloader is not None:
                 if (epoch + 1) % opt.eval_per_epoch == 0:
-                    eval_loss, eval_acc = _eval(model, evalloader)
+                    eval_loss, eval_acc = _eval(evalloader, model)
+                    GlobalLogger().get_logger().info(
+                        "Epoch {} with acc in evaluation: {:.2f}".format(epoch + 1, eval_acc))
                     best_acc = max(eval_acc, best_acc)
             else:
                 # End modify
@@ -135,8 +145,9 @@ def train(opt: Namespace, identifier: str):
             if args['scheduler_name'] is not None:
                 scheduler.step()
 
-        GlobalLogger().get_logger().info("Best acc in training: {:.2f}".format(best_acc))
-        return best_acc
+        GlobalLogger().get_logger().info("Best acc in evaluation: {:.2f}".format(best_acc))
+        best_acc_list[arch] = best_acc
+    return best_acc_list
 
 
 def _train(trainloader, model, optimizer):

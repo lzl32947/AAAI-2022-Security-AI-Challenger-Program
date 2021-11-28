@@ -3,4 +3,4 @@ checkpoint/
 log/
 .gitignore
 bases/data/*
-dataset/cifar_10_train
+dataset/cifar*
