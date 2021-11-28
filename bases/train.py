@@ -46,8 +46,12 @@ class MyDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         image, label = self.images[index], self.labels[index]
+        #######################
+        # Modified by adding None options
         if self.transform is not None:
             image = self.transform(image)
+        # End modified
+        #######################
         return image, label
 
     def __len__(self):
@@ -60,8 +64,12 @@ def _cross_entropy(outputs, smooth_labels):
 
 
 def train(opt: Namespace, identifier: str):
+    #######################
+    # Modified by adding the two paths
     dataset_path = opt.data_train
     checkpoint_path = os.path.join(opt.output_checkpoint_dir, opt.log_name, identifier)
+    # End modify
+    #######################
     for arch in ['resnet50', 'densenet121']:
         if arch == 'resnet50':
             args = args_resnet
@@ -132,7 +140,8 @@ def _train(trainloader, model, optimizer):
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg
 
-
+#######################
+# Modified by adding the following functions
 def evaluate(dataset_path: str, weight_path: str):
     for arch in ['resnet50', 'densenet121']:
         if arch == 'resnet50':
@@ -170,7 +179,8 @@ def _eval(testdataloader, model):
         losses.update(loss.item(), inputs.size(0))
         accs.update(acc[0].item(), inputs.size(0))
     return losses.avg, accs.avg
-
+# End Modify
+#######################
 
 def _save_checkpoint(state, arch, path):
     filepath = os.path.join(path, arch + '.pth.tar')

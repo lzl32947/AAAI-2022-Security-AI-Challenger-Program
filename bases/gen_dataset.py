@@ -1,8 +1,10 @@
 import numpy as np
 import torchvision
 import random
+import ssl
 
-dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=False)
+ssl._create_default_https_context = ssl._create_unverified_context
+dataset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True)
 images = []
 soft_labels = []
 for image, label in dataset:
@@ -14,5 +16,5 @@ for image, label in dataset:
 images = np.array(images)
 soft_labels = np.array(soft_labels)
 print(images.shape, images.dtype, soft_labels.shape, soft_labels.dtype)
-np.save('../dataset/baseline/data.npy', images)
-np.save('../dataset/baseline/label.npy', soft_labels)
+np.save('../dataset/cifar_10_train/data.npy', images)
+np.save('../dataset/cifar_10_train/label.npy', soft_labels)
