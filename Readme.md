@@ -22,6 +22,8 @@ Typically, can run the following commands:
 python trainer.py --log_name base --data_train dataset/baseline --data_eval dataset/baseline --output_checkpoint checkpoint
 ```
 
+Specifically, if you want to enable tensorboard for recording the images for training and testing, and watch the training procedures, please add the ```--enable_tensorboard``` in command line.
+
 ## Label
 
 The output label should be in one-hot of size of 10, which separately refer to:
