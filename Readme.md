@@ -19,5 +19,13 @@ click [here](util/tools/args_util.py))
 Typically, can run the following commands:
 
 ```shell
-python main.py --log_name base --data_train dataset/baseline --data_eval dataset/baseline --output_checkpoint checkpoint
+python trainer.py --log_name base --data_train dataset/baseline --data_eval dataset/baseline --output_checkpoint checkpoint
+```
+
+## Label
+
+The output label should be in one-hot of size of 10, which separately refer to:
+
+```python
+label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 ```

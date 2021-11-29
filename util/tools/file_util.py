@@ -8,8 +8,10 @@ import yaml
 
 from util.logger.logger import GlobalLogger
 
-
 # DEPRECATED
+from util.logger.tensorboards import GlobalTensorboard
+
+
 def read_config(config_path: str) -> Dict:
     """
     Read config.yaml to program
@@ -52,13 +54,16 @@ def set_ignore_warning(close: bool) -> None:
         warnings.filterwarnings("ignore")
 
 
-def remove_dir(*target):
+def remove_dir(*target: str) -> None:
     """
     Delete all files in the directory and then delete the directory
+    :param target: str, the path to the directory to remove, if length is 1, target will be recognized as the FULL PATH,
+    otherwise will be recognized as the path tuple
+    :return: None
     """
     try:
         if not os.path.exists(os.path.join(*target)):
-            return True
+            return
         else:
             files = os.path.join(*target)
             if os.path.islink(files):
@@ -82,12 +87,15 @@ def remove_dir(*target):
                     else:
                         break
     except IOError as e:
-        GlobalLogger().get_logger().error("Unable to delete {} with error {}".format(os.path.join(*target), e))
+        print("Unable to delete {} with error {}".format(os.path.join(*target), e))
 
 
-def rename_file(target: str, *source: str):
+def rename_file(target: str, *source: str) -> None:
     """
     Rename files to the target name
+    :param target: str, the name of the target, NOT THE FULL PATH
+    :param source: tuple of str, when length is 1, source will be recognized as the FULL PATH, otherwise will be the str
+    tuple, which iteratively lead to the target path.
     """
     try:
         if len(source) > 1:
@@ -102,17 +110,72 @@ def rename_file(target: str, *source: str):
                                                                e))
 
 
-def on_finish(opt, runtime: str):
-    shutil.copy2(os.path.join("configs", "train_config.py"), os.path.join(opt.log_dir, opt.log_name, runtime))
-
-
-def on_error(opt: argparse.Namespace, run_time: str, error_name: str):
+def delete_if_empty(*target: str) -> None:
     """
-    Remove all output of a failed runtime
+    Remove directory if is empty
+    :param target: tuple of str, when length is 1, source will be recognized as the FULL PATH, otherwise will be the str
+    tuple, which iteratively lead to the target path.
+    :return: None
+    """
+    try:
+        if not os.path.exists(os.path.join(*target)):
+            return
+        else:
+            files = os.path.join(*target)
+            if os.path.isdir(files) and len(os.listdir(files)) == 0:
+                shutil.rmtree(files)
+            else:
+                return
+            if len(target) != 1:
+                i = len(files) - 2
+                while i >= 0:
+                    path = os.path.join(*target[:i])
+                    if os.path.exists(path):
+                        try:
+                            os.remove(path)
+                            i -= 1
+                        except IOError:
+                            break
+                    else:
+                        break
+    except IOError as e:
+        print("Unable to delete {} with error {}".format(os.path.join(*target), e))
+
+
+
+def on_finish(opt: argparse.Namespace, runtime: str) -> None:
+    """
+    When the procedures finish, the function will run.
+    :param opt: argparse.Namespace, the runtime config
+    :param runtime: str, the global identifier
+    :return: None
+    """
+    # Copy the train config to the log directory
+    shutil.copy2(os.path.join("configs", "train_config.py"), os.path.join(opt.log_dir, opt.log_name, runtime))
+    # Delete the output if empty
+    delete_if_empty(opt.output_dir, opt.log_name, runtime)
+    # Delete the tensorboard files if empty
+    delete_if_empty(opt.tf_dir, opt.log_name, runtime)
+
+
+def on_error(opt: argparse.Namespace, runtime: str, error_name: str) -> None:
+    """
+    When the procedures end with interrupt or error, the function will run.
+    :param error_name: str, the name of the error
+    :param opt: argparse.Namespace, the runtime config
+    :param runtime: str, the global identifier
+    :return: None
     """
     # Remove all files in checkpoints, mainly weight files
-    remove_dir(opt.output_checkpoint_dir, opt.log_name, run_time)
+    remove_dir(opt.output_checkpoint_dir, opt.log_name, runtime)
     # Close logging module
     GlobalLogger().close()
+    GlobalTensorboard().close()
     # Remove the log output
-    rename_file(run_time + "_" + error_name, opt.log_dir, opt.log_name, run_time)
+    rename_file(runtime + "_" + error_name, opt.log_dir, opt.log_name, runtime)
+    # Remove the tensorboard output
+    rename_file(runtime + "_" + error_name, opt.tf_dir, opt.log_name, runtime)
+    # Delete the tensorboard files if empty
+    delete_if_empty(opt.tf_dir, opt.log_name, runtime + "_" + error_name)
+    # Delete the output if empty
+    delete_if_empty(opt.output_dir, opt.log_name, runtime)

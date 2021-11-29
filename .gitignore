@@ -4,3 +4,5 @@ log/
 .gitignore
 bases/data/*
 dataset/cifar*
+tensorboard
+output

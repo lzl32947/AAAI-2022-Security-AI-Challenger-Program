@@ -6,6 +6,7 @@ import shutil
 from argparse import Namespace
 from typing import Dict
 
+import torchvision.transforms
 from tqdm import tqdm
 
 import numpy as np
@@ -18,10 +19,14 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from PIL import Image
 from configs.train_config import args_resnet, args_densenet
+from functional.datasets.mixup_dataset import MixupDataset
 from util.logger.logger import GlobalLogger
 from bases.utils import load_model, AverageMeter, accuracy
 
 # Use CUDA
+from util.logger.tensorboards import GlobalTensorboard
+from util.tools.draw_util import ImageDrawer
+
 use_cuda = torch.cuda.is_available()
 
 seed = 11037
@@ -29,6 +34,16 @@ random.seed(seed)
 np.random.seed(seed)
 torch.manual_seed(seed)
 torch.backends.cudnn.deterministic = True
+
+#######################
+# Modified by adding transform
+global_norm = np.array([[0.4914, 0.4822, 0.4465], [0.2023, 0.1994, 0.2010]])  # (mean & std)
+denormalized = torchvision.transforms.Normalize(mean=-global_norm[0] / global_norm[1], std=1 / global_norm[1])
+global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
+
+
+# End modified
+#######################
 
 
 class MyDataset(torch.utils.data.Dataset):
@@ -92,7 +107,11 @@ def train(opt: Namespace, identifier: str):
             transforms.ToTensor(),
             transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
         ])
-        trainset = MyDataset(transform=transform_train, path=dataset_path)
+        #######################
+        # Modified source dataset
+        trainset = MixupDataset(transform=transform_train, path=dataset_path)
+        # End modify
+        #######################
         trainloader = data.DataLoader(trainset, batch_size=args['batch_size'], shuffle=True, num_workers=4)
 
         #######################
@@ -119,7 +138,13 @@ def train(opt: Namespace, identifier: str):
         GlobalLogger().get_logger().debug("Using config: {}".format(args).replace("\n", " "))
         # Train
         for epoch in tqdm(range(args['epochs'])):
-            train_loss, train_acc = _train(trainloader, model, optimizer)
+            train_loss, train_acc = _train(trainloader, model, optimizer, enable_tensorboard=opt.enable_tensorboard,
+                                           epoch=epoch)
+            if opt.enable_tensorboard:
+                GlobalTensorboard().get_writer().add_scalar("train/train_loss", train_loss,
+                                                            (epoch + 1) * len(trainloader))
+                GlobalTensorboard().get_writer().add_scalar("train/train_acc", train_acc / 100,
+                                                            (epoch + 1) * len(trainloader))
             GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
             #######################
             # Modified by adding the two paths
@@ -128,6 +153,11 @@ def train(opt: Namespace, identifier: str):
                     eval_loss, eval_acc = _eval(evalloader, model)
                     GlobalLogger().get_logger().info(
                         "Epoch {} with acc in evaluation: {:.2f}".format(epoch + 1, eval_acc))
+                    if opt.enable_tensorboard:
+                        GlobalTensorboard().get_writer().add_scalar("eval/eval_loss", eval_loss,
+                                                                    (epoch + 1) * len(evalloader))
+                        GlobalTensorboard().get_writer().add_scalar("eval/eval_acc", eval_acc / 100,
+                                                                    (epoch + 1) * len(evalloader))
                     best_eval = max(eval_acc, best_eval)
             # End modify
             #######################
@@ -152,13 +182,28 @@ def train(opt: Namespace, identifier: str):
     return best_acc_list
 
 
-def _train(trainloader, model, optimizer):
+def _train(trainloader, model, optimizer, **kwargs):
     losses = AverageMeter()
     accs = AverageMeter()
     # switch to train mode
     model.train()
 
-    for (inputs, soft_labels) in trainloader:
+    for index, (inputs, soft_labels) in enumerate(trainloader):
+        if "enable_tensorboard" in kwargs.keys() and kwargs[
+            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 100 == 0:
+            image_drawer = ImageDrawer(figsize=(32, 16))
+            inputs = denormalized(inputs)
+            title = []
+            for i in soft_labels.numpy():
+                classes = ""
+                for j in np.where(i > 0)[0]:
+                    classes += "{}:{:.2f}\n".format(global_label[j], i[j])
+                title.append(classes)
+            image_drawer.draw_same_batch(inputs, row=8, title=title)
+
+            image = image_drawer.get_image()
+            GlobalTensorboard().get_writer().add_figure("train", image, global_step=index + 1 + len(trainloader) *
+                                                                                    kwargs["epoch"])
         inputs, soft_labels = inputs.cuda(), soft_labels.cuda()
         targets = soft_labels.argmax(dim=1)
         outputs = model(inputs)
@@ -198,11 +243,25 @@ def evaluate(dataset_path: str, weight_path: str):
         GlobalLogger().get_logger().info("Average loss in test: {:.4f}".format(test_loss))
 
 
-def _eval(testdataloader, model):
+def _eval(testdataloader, model, **kwargs):
     losses = AverageMeter()
     accs = AverageMeter()
     model.eval()
-    for (inputs, soft_labels) in testdataloader:
+    for index, (inputs, soft_labels) in enumerate(testdataloader):
+        if "enable_tensorboard" in kwargs.keys() and kwargs[
+            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 100 == 0:
+            image_drawer = ImageDrawer(figsize=(32, 16))
+            inputs = denormalized(inputs)
+            title = []
+            for i in soft_labels.numpy():
+                classes = ""
+                for j in np.where(i > 0)[0]:
+                    classes += "{}:{:.2f}\n".format(global_label[j], i[j])
+                title.append(classes)
+            image_drawer.draw_same_batch(inputs, row=8, title=title)
+            image = image_drawer.get_image()
+            GlobalTensorboard().get_writer().add_figure("eval", image, global_step=index + 1 + len(testdataloader) *
+                                                                                   kwargs["epoch"])
         inputs, soft_labels = inputs.cuda(), soft_labels.cuda()
         targets = soft_labels.argmax(dim=1)
         outputs = model(inputs)
