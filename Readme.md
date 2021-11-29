@@ -24,6 +24,11 @@ python trainer.py --log_name base --data_train dataset/baseline --data_eval data
 
 Specifically, if you want to enable tensorboard for recording the images for training and testing, and watch the training procedures, please add the ```--enable_tensorboard``` in command line.
 
+Commonly when modified the files, you can run the command like the followings:
+
+```shell
+python trainer.py --log_name cifar10 --data_train dataset/cifar_10_standard_train --data_eval dataset/cifar_10_standard_test --eval_per_epoch 20 --enable_tensorboard
+```
 ## Label
 
 The output label should be in one-hot of size of 10, which separately refer to:
