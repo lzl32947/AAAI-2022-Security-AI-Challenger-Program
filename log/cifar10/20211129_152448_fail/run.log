@@ -1,0 +1,5 @@
+2021-11-29 15:24:48,668 - trainer.py[line:25] - INFO: Running with identifier 20211129_152448
+2021-11-29 15:24:48,668 - trainer.py[line:27] - INFO: Saving log to log\cifar10\20211129_152448\run.log
+2021-11-29 15:24:48,668 - trainer.py[line:28] - INFO: Using args: [('log_name', 'cifar10'), ('data_train', 'dataset/cifar_10_train'), ('data_eval', 'dataset/cifar_10_test'), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 1), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True)]
+2021-11-29 15:24:48,671 - train.py[line:85] - INFO: Running model resnet50
+2021-11-29 15:24:58,118 - trainer.py[line:47] - ERROR: Pixel value should bigger than -1!

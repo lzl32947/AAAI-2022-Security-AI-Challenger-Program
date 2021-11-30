@@ -1,0 +1,4 @@
+2021-11-28 23:46:26,372 - main.py[line:24] - INFO: Running with identifier 20211128_234626
+2021-11-28 23:46:26,372 - main.py[line:26] - INFO: Saving log to log\cifar10\20211128_234626\run.log
+2021-11-28 23:46:26,372 - main.py[line:27] - INFO: Using args: [('log_name', 'cifar10'), ('data_train', 'dataset/cifar_10_train'), ('data_eval', 'dataset/cifar_10_test'), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('not_ignore_warning', False)]
+2021-11-28 23:46:40,855 - main.py[line:43] - INFO: Keyboard Interrupt

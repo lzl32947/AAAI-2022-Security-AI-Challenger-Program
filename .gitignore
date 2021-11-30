@@ -1,6 +1,5 @@
 .idea
 checkpoint/
-log/
 .gitignore
 bases/data/*
 dataset/cifar*
