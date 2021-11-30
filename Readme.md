@@ -36,3 +36,7 @@ The output label should be in one-hot of size of 10, which separately refer to:
 ```python
 label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 ```
+
+## Log
+
+Log files can be found in ```log``` directory.
