@@ -141,9 +141,9 @@ def train(opt: Namespace, identifier: str):
             train_loss, train_acc = _train(trainloader, model, optimizer, enable_tensorboard=opt.enable_tensorboard,
                                            epoch=epoch)
             if opt.enable_tensorboard:
-                GlobalTensorboard().get_writer().add_scalar("train/train_loss", train_loss,
+                GlobalTensorboard().get_writer().add_scalar("{}/train/train_loss".format(arch), train_loss,
                                                             (epoch + 1) * len(trainloader))
-                GlobalTensorboard().get_writer().add_scalar("train/train_acc", train_acc / 100,
+                GlobalTensorboard().get_writer().add_scalar("{}/train/train_acc".format(arch), train_acc / 100,
                                                             (epoch + 1) * len(trainloader))
             GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
             #######################
@@ -154,9 +154,9 @@ def train(opt: Namespace, identifier: str):
                     GlobalLogger().get_logger().info(
                         "Epoch {} with acc in evaluation: {:.2f}".format(epoch + 1, eval_acc))
                     if opt.enable_tensorboard:
-                        GlobalTensorboard().get_writer().add_scalar("eval/eval_loss", eval_loss,
+                        GlobalTensorboard().get_writer().add_scalar("{}/eval/eval_loss".format(arch), eval_loss,
                                                                     (epoch + 1) * len(evalloader))
-                        GlobalTensorboard().get_writer().add_scalar("eval/eval_acc", eval_acc / 100,
+                        GlobalTensorboard().get_writer().add_scalar("{}/eval/eval_acc".format(arch), eval_acc / 100,
                                                                     (epoch + 1) * len(evalloader))
                     best_eval = max(eval_acc, best_eval)
             # End modify
