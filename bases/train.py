@@ -140,19 +140,23 @@ def train(opt: Namespace, identifier: str):
         for epoch in tqdm(range(args['epochs'])):
             train_loss, train_acc = _train(trainloader, model, optimizer, enable_tensorboard=opt.enable_tensorboard,
                                            epoch=epoch)
+            GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
+
+            #######################
+            # Modified by adding the two paths
             if opt.enable_tensorboard:
                 GlobalTensorboard().get_writer().add_scalar("{}/train/train_loss".format(arch), train_loss,
                                                             (epoch + 1) * len(trainloader))
                 GlobalTensorboard().get_writer().add_scalar("{}/train/train_acc".format(arch), train_acc / 100,
                                                             (epoch + 1) * len(trainloader))
-            GlobalLogger().get_logger().debug("Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
-            #######################
-            # Modified by adding the two paths
+
             if opt.eval_per_epoch > 0 and evalloader is not None:
                 if (epoch + 1) % opt.eval_per_epoch == 0:
                     eval_loss, eval_acc = _eval(evalloader, model)
                     GlobalLogger().get_logger().info(
                         "Epoch {} with acc in evaluation: {:.2f}".format(epoch + 1, eval_acc))
+                    GlobalLogger().get_logger().info(
+                        "Epoch {} with acc in training: {:.2f}".format(epoch + 1, train_acc))
                     if opt.enable_tensorboard:
                         GlobalTensorboard().get_writer().add_scalar("{}/eval/eval_loss".format(arch), eval_loss,
                                                                     (epoch + 1) * len(evalloader))

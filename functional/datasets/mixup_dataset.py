@@ -45,12 +45,8 @@ class MixupDataset(torch.utils.data.Dataset):
             image = self.transform(image)
             other_image = self.transform(self.images[other])
         else:
-            self.transform = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
-            ])
-            image = self.transform(image)
-            other_image = self.transform(self.images[other])
+            image = np.array(image)
+            other_image = np.array(self.images[other])
         image = image * alpha + other_image * (1 - alpha)
         label = label * alpha + self.labels[other] * (1 - alpha)
         return image, label
