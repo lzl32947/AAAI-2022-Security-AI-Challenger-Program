@@ -13,7 +13,7 @@ args_resnet = {
     'scheduler_hyperparameters': {
         'T_max': 200
     },
-    'batch_size': 128,  # 256 for original
+    'batch_size': 192,  # 256 for original
 }
 args_densenet = {
     'epochs': 200,
@@ -24,5 +24,5 @@ args_densenet = {
         'weight_decay': 1e-4
     },
     'scheduler_name': None,
-    'batch_size': 128,  # 256 for original
+    'batch_size': 192,  # 256 for original
 }
