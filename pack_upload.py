@@ -9,6 +9,7 @@ from util.tools.file_util import create_dir, remove_dir
 if __name__ == '__main__':
     opt = parse_pack_opt()
     upload_identifier = time.strftime("%Y%m%d", time.localtime())
+    create_dir("upload")
     files = glob.glob(os.path.join("upload", "{}*".format(upload_identifier)))
     current = len(files) + 1
     create_dir("upload", "{}_{}".format(upload_identifier, current))

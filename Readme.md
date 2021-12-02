@@ -40,3 +40,16 @@ label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse"
 ## Log
 
 Log files can be found in ```log``` directory.
+
+## Pack for uploads
+
+When training finished, all the files can be packed with the ```pack_upload.py```, which args can be found same at ```util/tools/args_util.py```(
+click [here](util/tools/args_util.py))
+
+Typically, can run the following commands:
+
+```shell
+python pack_upload.py --log_name cifar10 --identifier 20211128_213656 --data_dir dataset/baseline
+```
+
+Then you can find the packed zip file in ```upload``` directory.
