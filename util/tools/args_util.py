@@ -11,11 +11,9 @@ def parse_train_opt() -> argparse.Namespace:
     # The name of this log, e.g. "base"
     parser.add_argument('--log_name', type=str, help='The name of the log')
     # The path to the training dataset, default is "dataset/baseline"
-    parser.add_argument('--data_train', type=str, help='The path to input directory',
-                        default=os.path.join("dataset", "baseline"))
+    parser.add_argument('--data_train', type=str, help='The path to input directory')
     # The path to the evaluation dataset, default is "dataset/baseline", and is the same of the training dataset
-    parser.add_argument('--data_eval', type=str, help='The path to evaluation directory',
-                        default=os.path.join("dataset", "baseline"))
+    parser.add_argument('--data_eval', type=str, help='The path to evaluation directory')
 
     # The path to the checkpoint, default is "checkpoint"
     parser.add_argument('--output_checkpoint_dir', type=str, help='The path to evaluation directory',
