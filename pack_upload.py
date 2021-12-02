@@ -48,11 +48,12 @@ if __name__ == '__main__':
 
     print("Generating the Dataset.zip ......".format(target_path))
     zfile = zipfile.ZipFile(os.path.join(target_path, "Dataset.zip"), "w")
-    zfile.write(os.path.join(target_path, "data.npy"))
-    zfile.write(os.path.join(target_path, "label.npy"))
-    zfile.write(os.path.join(target_path, "config.py"))
-    zfile.write(os.path.join(target_path, "densenet121.pth.tar"))
-    zfile.write(os.path.join(target_path, "resnet50.pth.tar"))
+    os.chdir(target_path)
+    zfile.write("data.npy")
+    zfile.write("label.npy")
+    zfile.write("config.py")
+    zfile.write("densenet121.pth.tar")
+    zfile.write("resnet50.pth.tar")
     zfile.close()
 
     print("Finish generate the Dataset.zip in {}.".format(target_path))

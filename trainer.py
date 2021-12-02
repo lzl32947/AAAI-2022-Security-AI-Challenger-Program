@@ -39,7 +39,7 @@ def global_init() -> (argparse.Namespace, str):
             "Using tensorboard, store at: {}".format(os.path.join(opt.tf_dir, opt.log_name, run_time)))
     GlobalLogger().get_logger().info("Using training data: {}".format(opt.data_train))
     GlobalLogger().get_logger().info("Pack this file using this command if training finished: {}".format(
-        "--logdir " + opt.log_dir + " --log_name " + opt.log_name + " --identifier " + run_time + " --output_checkpoint_dir " + opt.output_checkpoint_dir + " --data_dir " + opt.data_train
+        "--log_dir " + opt.log_dir + " --log_name " + opt.log_name + " --identifier " + run_time + " --output_checkpoint_dir " + opt.output_checkpoint_dir + " --data_dir " + opt.data_train
     ))
     return opt, run_time
 
