@@ -109,7 +109,7 @@ def train(opt: Namespace, identifier: str):
         ])
         #######################
         # Modified source dataset
-        trainset = MixupDataset(transform=transform_train, path=dataset_path)
+        trainset = MyDataset(transform=transform_train, path=dataset_path)
         # End modify
         #######################
         trainloader = data.DataLoader(trainset, batch_size=args['batch_size'], shuffle=True, num_workers=4)
@@ -189,6 +189,7 @@ def train(opt: Namespace, identifier: str):
 def _train(trainloader, model, optimizer, **kwargs):
     losses = AverageMeter()
     accs = AverageMeter()
+    model.eval()    # Original here
     # switch to train mode
     model.train()
 

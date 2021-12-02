@@ -5,13 +5,13 @@ import time
 from bases.train import train
 from util.logger.logger import GlobalLogger
 from util.logger.tensorboards import GlobalTensorboard
-from util.tools.args_util import parse_opt
+from util.tools.args_util import parse_train_opt
 from util.tools.file_util import on_error, read_config, set_ignore_warning, create_dir, on_finish
 
 
 def global_init() -> (argparse.Namespace, str):
     # Get the configs from the command line
-    opt = parse_opt()
+    opt = parse_train_opt()
     # Generate the run time as the identifier
     run_time = time.strftime("%Y%m%d_%H%M%S", time.localtime())
     # Whether to ignore warning raised by torch
@@ -37,6 +37,10 @@ def global_init() -> (argparse.Namespace, str):
         GlobalTensorboard().init_config(tf_path=opt.tf_dir, store_name=os.path.join(opt.log_name, run_time))
         GlobalLogger().get_logger().info(
             "Using tensorboard, store at: {}".format(os.path.join(opt.tf_dir, opt.log_name, run_time)))
+    GlobalLogger().get_logger().info("Using training data: {}".format(args.data_train))
+    GlobalLogger().get_logger().info("Pack this file using this command if training finished: {}".format(
+        "--logdir " + args.log_dir + "--log_name " + args.log_name + "--identifier " + run_time + "--output_checkpoint_dir " + args.output_checkpoint_dir + "--data_dir " + args.data_train
+    ))
     return opt, run_time
 
 
@@ -45,6 +49,7 @@ if __name__ == '__main__':
     try:
         train(args, identifier)
         on_finish(args, identifier)
+
     except Exception as e:
         GlobalLogger().get_logger().error(e)
         on_error(args, identifier, "fail")
@@ -52,3 +57,10 @@ if __name__ == '__main__':
     except KeyboardInterrupt as k:
         GlobalLogger().get_logger().info("Keyboard Interrupt")
         on_error(args, identifier, "interrupt")
+
+    if args.pack:
+        import subprocess
+
+        subprocess.run(
+            ["python", "pack_upload.py", "--logdir", args.log_dir, "--log_name ", args.log_name, "--identifier ",
+             identifier, "--output_checkpoint_dir ", args.output_checkpoint_dir, "--data_dir ", args.data_train])

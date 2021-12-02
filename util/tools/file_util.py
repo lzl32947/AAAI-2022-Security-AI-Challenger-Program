@@ -142,7 +142,6 @@ def delete_if_empty(*target: str) -> None:
         print("Unable to delete {} with error {}".format(os.path.join(*target), e))
 
 
-
 def on_finish(opt: argparse.Namespace, runtime: str) -> None:
     """
     When the procedures finish, the function will run.

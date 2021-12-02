@@ -2,12 +2,12 @@ import argparse
 import os
 
 
-def parse_opt() -> argparse.Namespace:
+def parse_train_opt() -> argparse.Namespace:
     """
     Parse the argument when the program starts
     :return: argparse.Namespace, the parsed arguments
     """
-    parser = argparse.ArgumentParser(description='Options')
+    parser = argparse.ArgumentParser(description='Train options')
     # The name of this log, e.g. "base"
     parser.add_argument('--log_name', type=str, help='The name of the log')
     # The path to the training dataset, default is "dataset/baseline"
@@ -35,5 +35,17 @@ def parse_opt() -> argparse.Namespace:
     # Enable tensorboard
     parser.add_argument("--enable_tensorboard", action="store_true",
                         help="if given, tensorboard will be used to record the processes")
+    parser.add_argument("--pack", action="store_true")
 
+    return parser.parse_args()
+
+
+def parse_pack_opt() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Pack options')
+    parser.add_argument('--log_dir', type=str, help='The path to log directory', default="log")
+    parser.add_argument('--log_name', type=str, help='The name of the log')
+    parser.add_argument('--identifier', type=str, help='The identifier string for pack')
+    parser.add_argument('--output_checkpoint_dir', type=str, help='The path to evaluation directory',
+                        default="checkpoint")
+    parser.add_argument('--data_dir', type=str, help='The path to the data set')
     return parser.parse_args()
