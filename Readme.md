@@ -53,3 +53,5 @@ python pack_upload.py --log_name cifar10 --identifier 20211128_213656 --data_dir
 ```
 
 Then you can find the packed zip file in ```upload``` directory.
+
+## Data Storage

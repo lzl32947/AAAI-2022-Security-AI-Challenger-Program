@@ -188,6 +188,13 @@ class ImageDrawer(Drawer):
                 ax.set_title("{}_{}".format(kwargs["title"][index], index + 1))
 
     def draw_same_batch(self, input_image: Union[np.ndarray, torch.Tensor], row: int, **kwargs) -> None:
+        """
+        Draw the images with the same batch
+        :param input_image: np.ndarray or torch.Tensor
+        :param row: int, the row to use in the figure
+        :param kwargs: Dict, the packed parameters
+        :return: None
+        """
         items = len(input_image)
         col = items // row if items % row == 0 else items // row + 1
         count = 1

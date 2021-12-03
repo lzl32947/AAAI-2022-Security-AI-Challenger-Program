@@ -142,7 +142,7 @@ def delete_if_empty(*target: str) -> None:
         print("Unable to delete {} with error {}".format(os.path.join(*target), e))
 
 
-def on_finish(opt: argparse.Namespace, runtime: str) -> None:
+def on_train_finish(opt: argparse.Namespace, runtime: str) -> None:
     """
     When the procedures finish, the function will run.
     :param opt: argparse.Namespace, the runtime config
@@ -157,7 +157,7 @@ def on_finish(opt: argparse.Namespace, runtime: str) -> None:
     delete_if_empty(opt.tf_dir, opt.log_name, runtime)
 
 
-def on_error(opt: argparse.Namespace, runtime: str, error_name: str) -> None:
+def on_train_error(opt: argparse.Namespace, runtime: str, error_name: str) -> None:
     """
     When the procedures end with interrupt or error, the function will run.
     :param error_name: str, the name of the error

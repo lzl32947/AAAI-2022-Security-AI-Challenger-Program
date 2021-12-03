@@ -4,7 +4,7 @@ import os
 
 def parse_train_opt() -> argparse.Namespace:
     """
-    Parse the argument when the program starts
+    Parse the argument when the training procedures starts
     :return: argparse.Namespace, the parsed arguments
     """
     parser = argparse.ArgumentParser(description='Train options')
@@ -33,17 +33,46 @@ def parse_train_opt() -> argparse.Namespace:
     # Enable tensorboard
     parser.add_argument("--enable_tensorboard", action="store_true",
                         help="if given, tensorboard will be used to record the processes")
+    # Whether to automatically pack the output when finished
     parser.add_argument("--pack", action="store_true")
 
     return parser.parse_args()
 
 
 def parse_pack_opt() -> argparse.Namespace:
+    """
+    Parse the argument when the packing up procedures starts
+    :return: argparse.Namespace, the parsed arguments
+    """
     parser = argparse.ArgumentParser(description='Pack options')
+    # THe path to the log directory, which contains the "train_config.py"
     parser.add_argument('--log_dir', type=str, help='The path to log directory', default="log")
+    # The name of the log, used to identify the log and the checkpoints
     parser.add_argument('--log_name', type=str, help='The name of the log')
+    # The time identifier, used to identify the log and the checkpoints
     parser.add_argument('--identifier', type=str, help='The identifier string for pack')
+    # The path to the checkpoint directory, used to get the output
     parser.add_argument('--output_checkpoint_dir', type=str, help='The path to evaluation directory',
                         default="checkpoint")
+    # The path to the dataset, which contains the "*.npy"
     parser.add_argument('--data_dir', type=str, help='The path to the data set')
+    return parser.parse_args()
+
+
+def parse_plot_opt() -> argparse.Namespace:
+    """
+    Parse the argument when the plotting the dataset procedures starts
+    :return: argparse.Namespace, the parsed arguments
+    """
+    parser = argparse.ArgumentParser(description='Pack options')
+    # The path to output
+    parser.add_argument('--output_dir', type=str, help="The path to the output directory", default="output")
+    # The path to the dataset, which contains the "*.npy"
+    parser.add_argument('--data_dir', type=str, help='The path to the data set')
+    # The name of the log, used to identify the log and the checkpoints
+    parser.add_argument('--log_name', type=str, help='The name of the log')
+    # The batch to show
+    parser.add_argument('--batch_size', type=int, help='THe size of a batch', default=16)
+    # The row to plot
+    parser.add_argument('--row', type=int, help='THe size of a batch', default=4)
     return parser.parse_args()

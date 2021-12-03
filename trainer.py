@@ -6,7 +6,7 @@ from bases.train import train
 from util.logger.logger import GlobalLogger
 from util.logger.tensorboards import GlobalTensorboard
 from util.tools.args_util import parse_train_opt
-from util.tools.file_util import on_error, read_config, set_ignore_warning, create_dir, on_finish
+from util.tools.file_util import on_train_error, read_config, set_ignore_warning, create_dir, on_train_finish
 
 
 def global_init() -> (argparse.Namespace, str):
@@ -48,15 +48,15 @@ if __name__ == '__main__':
     args, identifier = global_init()
     try:
         train(args, identifier)
-        on_finish(args, identifier)
+        on_train_finish(args, identifier)
 
     except Exception as e:
         GlobalLogger().get_logger().error(e)
-        on_error(args, identifier, "fail")
+        on_train_error(args, identifier, "fail")
         raise e
     except KeyboardInterrupt as k:
         GlobalLogger().get_logger().info("Keyboard Interrupt")
-        on_error(args, identifier, "interrupt")
+        on_train_error(args, identifier, "interrupt")
 
     if args.pack:
         import subprocess
