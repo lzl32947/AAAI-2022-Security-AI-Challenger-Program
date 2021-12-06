@@ -1,34 +1,61 @@
+import importlib
+import os
+import random
+
 import numpy as np
+import torch
 
-from functional.datasets.mixup_dataset import MixupDataset
-import torchvision.transforms as transforms
-import torch.utils.data as data
+from functional.generator_function.global_definition import ArgumentRunnable
+from functional.util.tools.args_util import parse_generation_opt
+from functional.util.tools.file_util import create_dir, remove_dir
 
+# Init the random values
+from functional.util.tools.generator_util import compose_config
 
-def mix_up_random(dataset_path):
-    trainset = MixupDataset(transform=None, path=dataset_path)
-    trainloader = data.DataLoader(trainset, batch_size=1, shuffle=True, num_workers=0)
-    data_list = []
-    label_list = []
-    count = 1
-    for d, l in trainloader:
-        if count > 50000:
-            break
-        d = d.numpy().astype(np.uint8)
-        l = l.numpy()
-
-        data_list.append(d)
-        label_list.append(l)
-        count += 1
-        if count % 100 == 0:
-            print(count)
-    data_list = np.array(data_list)
-    data_list = np.squeeze(data_list)
-    label_list = np.array(label_list)
-    label_list = np.squeeze(label_list)
-    np.save("output/data.npy", data_list)
-    np.save("output/label.npy", label_list)
-
+seed = 11037
+random.seed(seed)
+np.random.seed(seed)
+torch.manual_seed(seed)
+torch.backends.cudnn.deterministic = True
 
 if __name__ == '__main__':
-    mix_up_random("dataset/cifar_10_standard_train")
+    opt = parse_generation_opt()
+    create_dir(opt.output_data_path)
+
+    target_dir = os.path.join(opt.output_data_path, opt.store_name)
+    if not os.path.exists(os.path.join(opt.output_data_path, opt.store_name)):
+        create_dir(opt.output_data_path, opt.store_name)
+    else:
+        print("{} already exist!".format(target_dir))
+        if opt.cover:
+            print("Cover enable, replace the previous one...")
+            remove_dir(opt.output_data_path, opt.store_name)
+            create_dir(opt.output_data_path, opt.store_name)
+        else:
+            print("Change it to another one!")
+            exit(-1)
+    max_length = opt.max_length
+    config = opt.config
+    try:
+        module = importlib.import_module("configs.generate_config")
+        if hasattr(module, config):
+            config = getattr(module, config)
+        else:
+            raise RuntimeError
+        dataset_module = importlib.import_module("functional.generator_function.dataset_function")
+        if hasattr(dataset_module, opt.base_dataset):
+            datasets = getattr(dataset_module, opt.base_dataset)()
+        else:
+            raise RuntimeError
+        composed_transform = compose_config(config)
+        runnable = ArgumentRunnable(datasets, composed_transform)
+        data, label = runnable()
+        description = str(composed_transform)
+        np.save(os.path.join(target_dir, "data.npy"), data)
+        np.save(os.path.join(target_dir, "label.npy"), label)
+        with open(os.path.join(target_dir, "description.txt"), "w", encoding="utf-8") as fout:
+            fout.write(description)
+    except (NameError, ValueError, FileNotFoundError, FileExistsError) as e:
+        print("Fail to generate the dataset!")
+        remove_dir(opt.output_data_path, opt.store_name)
+        print(e)

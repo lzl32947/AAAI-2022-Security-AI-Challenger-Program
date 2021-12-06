@@ -1,13 +1,12 @@
-import argparse
 import glob
 import os.path
 import time
 
 import numpy as np
 
-from util.tools.args_util import parse_plot_opt
-from util.tools.draw_util import ImageDrawer
-from util.tools.file_util import create_dir, remove_dir
+from functional.util.tools.args_util import parse_plot_opt
+from functional.util.tools.draw_util import ImageDrawer
+from functional.util.tools.file_util import create_dir, remove_dir
 from tqdm import tqdm
 
 global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
@@ -26,7 +25,7 @@ if __name__ == '__main__':
             raise ValueError
         data = np.load(image_path[0], allow_pickle=True)
         label = np.load(label_path[0], allow_pickle=True)
-    except IOError or TypeError or FileNotFoundError or ValueError or Exception as e:
+    except (IOError, TypeError, FileNotFoundError, ValueError, Exception) as e:
         print(e)
         raise e
     # Create the output directory, e.g. "output/base/2021123_223310"
@@ -76,6 +75,6 @@ if __name__ == '__main__':
             drawer.draw_same_batch(image_list, opt.row, title=title)
             drawer.save_image(os.path.join(target_dir, "{}.jpg".format(i)))
             drawer.clear()
-    except Exception or IOError or FileNotFoundError or KeyboardInterrupt as e:
+    except (Exception, IOError, FileNotFoundError, KeyboardInterrupt) as e:
         remove_dir(opt.output_dir, opt.log_name, run_time)
-        print(e)
+        raise e

@@ -13,8 +13,8 @@ Original ```Readme``` can be found in [here](doc/README.md).
 
 ## Run baseline
 
-The main script of the project is ```main.py```, and the parsed args can be found at ```util/tools/args_util.py```(
-click [here](util/tools/args_util.py))
+The main script of the project is ```main.py```, and the parsed args can be found at ```functional/util/tools/args_util.py```(
+click [here](functional/util/tools/args_util.py))
 
 Typically, can run the following commands:
 
@@ -43,8 +43,8 @@ Log files can be found in ```log``` directory.
 
 ## Pack for uploads
 
-When training finished, all the files can be packed with the ```pack_upload.py```, which args can be found same at ```util/tools/args_util.py```(
-click [here](util/tools/args_util.py))
+When training finished, all the files can be packed with the ```pack_upload.py```, which args can be found same at ```functional/util/tools/args_util.py```(
+click [here](functional/util/tools/args_util.py))
 
 Typically, can run the following commands:
 

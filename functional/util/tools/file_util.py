@@ -6,10 +6,10 @@ from typing import Dict
 
 import yaml
 
-from util.logger.logger import GlobalLogger
+from functional.util.logger.logger import GlobalLogger
 
 # DEPRECATED
-from util.logger.tensorboards import GlobalTensorboard
+from functional.util.logger.tensorboards import GlobalTensorboard
 
 
 def read_config(config_path: str) -> Dict:

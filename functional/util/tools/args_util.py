@@ -76,3 +76,14 @@ def parse_plot_opt() -> argparse.Namespace:
     # The row to plot
     parser.add_argument('--row', type=int, help='THe size of a batch', default=4)
     return parser.parse_args()
+
+
+def parse_generation_opt() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Generate options')
+    parser.add_argument('--output_data_path', type=str, help="The path to the output directory", default="dataset")
+    parser.add_argument('--base_dataset', type=str, help="The basic dataset to use", default="cifar10_test")
+    parser.add_argument('--store_name', type=str, help="The name of the dataset", required=True)
+    parser.add_argument('--max_length', type=int, help="The max size of the generated dataset", default=50000)
+    parser.add_argument('--config', type=str, help="The function to use for generation", required=True)
+    parser.add_argument('--cover', action="store_true", help="Whether to cover the dataset if exists")
+    return parser.parse_args()

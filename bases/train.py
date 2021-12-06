@@ -2,30 +2,25 @@ from __future__ import print_function
 
 import os
 import random
-import shutil
 from argparse import Namespace
-from typing import Dict
 
 import torchvision.transforms
 from tqdm import tqdm
 import glob
 import numpy as np
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data as data
 import torchvision.transforms as transforms
-import torchvision.datasets as datasets
 from PIL import Image
 from configs.train_config import args_resnet, args_densenet
-from functional.datasets.mixup_dataset import MixupDataset
-from util.logger.logger import GlobalLogger
+from functional.util.logger.logger import GlobalLogger
 from bases.utils import load_model, AverageMeter, accuracy
 
 # Use CUDA
-from util.logger.tensorboards import GlobalTensorboard
-from util.tools.draw_util import ImageDrawer
+from functional.util.logger.tensorboards import GlobalTensorboard
+from functional.util.tools.draw_util import ImageDrawer
 
 use_cuda = torch.cuda.is_available()
 
@@ -60,7 +55,7 @@ class MyDataset(torch.utils.data.Dataset):
                     images = np.load(os.path.join(path, 'data.npy'), allow_pickle=True)
                     labels = np.load(os.path.join(path, 'label.npy'), allow_pickle=True)
                     GlobalLogger().get_logger().info("Load dataset with pickle successful.")
-                except ValueError or FileNotFoundError as e:
+                except (ValueError, FileNotFoundError) as e:
                     GlobalLogger().get_logger().warning("Unable to load dataset!")
                     raise e
         else:
@@ -81,7 +76,7 @@ class MyDataset(torch.utils.data.Dataset):
                     images = np.load(image_path[0], allow_pickle=True)
                     labels = np.load(label_path[0], allow_pickle=True)
                     GlobalLogger().get_logger().info("Load renamed-dataset with pickle successful.")
-                except ValueError or FileNotFoundError as e:
+                except (ValueError, FileNotFoundError) as e:
                     GlobalLogger().get_logger().warning("Unable to load renamed-dataset!")
                     raise e
         # End modified

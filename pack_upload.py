@@ -3,8 +3,8 @@ import os
 import shutil
 import time
 import zipfile
-from util.tools.args_util import parse_pack_opt
-from util.tools.file_util import create_dir, remove_dir
+from functional.util.tools.args_util import parse_pack_opt
+from functional.util.tools.file_util import create_dir, remove_dir
 
 if __name__ == '__main__':
     opt = parse_pack_opt()
@@ -16,15 +16,15 @@ if __name__ == '__main__':
     target_path = os.path.join("upload", "{}_{}.".format(upload_identifier, current))
 
     try:
-        image_path = glob.glob(os.path.join(opt.data_dir,"*data*.npy"))
-        label_path = glob.glob(os.path.join(opt.data_dir,"*label*.npy"))
+        image_path = glob.glob(os.path.join(opt.data_dir, "*data*.npy"))
+        label_path = glob.glob(os.path.join(opt.data_dir, "*label*.npy"))
         if len(image_path) != len(label_path) or len(image_path) != 1:
             print("Multi-implementation of dataset!")
             raise ValueError
         shutil.copy2(image_path[0], target_path)
         shutil.copy2(label_path[0], target_path)
 
-    except IOError or FileNotFoundError or FileExistsError or OSError or TypeError:
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
         print("Unable to move data from {} to {}.".format(opt.data_dir, target_path))
         remove_dir("upload", "{}_{}".format(upload_identifier, current))
         exit(-1)
@@ -32,7 +32,7 @@ if __name__ == '__main__':
         shutil.copy2(os.path.join(opt.log_dir, opt.log_name, opt.identifier, "train_config.py"),
                      os.path.join(target_path, "config.py"))
 
-    except IOError or FileNotFoundError or FileExistsError or OSError or TypeError:
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
         print("Unable to move config from {} to {}.".format(
             os.path.join(opt.log_dir, opt.log_name, opt.identifier, "train_config.py"),
             os.path.join(target_path, "config.py")))
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "resnet50.pth.tar"),
                      target_path)
 
-    except IOError or FileNotFoundError or FileExistsError or OSError or TypeError:
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
         print("Unable to move weight from {} to {}".format(
             os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier),
             target_path))
