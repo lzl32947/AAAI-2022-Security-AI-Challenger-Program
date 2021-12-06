@@ -62,5 +62,5 @@ if __name__ == '__main__':
         import subprocess
 
         subprocess.run(
-            ["python", "pack_upload.py", "--logdir", args.log_dir, "--log_name ", args.log_name, "--identifier ",
-             identifier, "--output_checkpoint_dir ", args.output_checkpoint_dir, "--data_dir ", args.data_train])
+            ["python", "pack_upload.py", "--logdir", args.log_dir, "--log_name", args.log_name, "--identifier",
+             identifier, "--output_checkpoint_dir", args.output_checkpoint_dir, "--data_dir", args.data_train])

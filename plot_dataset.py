@@ -1,4 +1,5 @@
 import argparse
+import glob
 import os.path
 import time
 
@@ -8,6 +9,7 @@ from util.tools.args_util import parse_plot_opt
 from util.tools.draw_util import ImageDrawer
 from util.tools.file_util import create_dir, remove_dir
 from tqdm import tqdm
+
 global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 
 if __name__ == '__main__':
@@ -17,10 +19,16 @@ if __name__ == '__main__':
     run_time = time.strftime("%Y%m%d_%H%M%S", time.localtime())
 
     try:
-        data = np.load(os.path.join(opt.data_dir, "data.npy"), allow_pickle=True)
-        label = np.load(os.path.join(opt.data_dir, "label.npy"), allow_pickle=True)
-    except IOError or TypeError or FileNotFoundError or Exception as e:
+        image_path = glob.glob(os.path.join(opt.data_dir, "*data*.npy"))
+        label_path = glob.glob(os.path.join(opt.data_dir, "*label*.npy"))
+        if len(image_path) != len(label_path) or len(image_path) != 1:
+            print("Multi-implementation of dataset!")
+            raise ValueError
+        data = np.load(image_path[0], allow_pickle=True)
+        label = np.load(label_path[0], allow_pickle=True)
+    except IOError or TypeError or FileNotFoundError or ValueError or Exception as e:
         print(e)
+        raise e
     # Create the output directory, e.g. "output/base/2021123_223310"
     create_dir(opt.output_dir, opt.log_name, run_time)
     target_dir = os.path.join(opt.output_dir, opt.log_name, run_time)

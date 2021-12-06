@@ -14,9 +14,15 @@ if __name__ == '__main__':
     current = len(files) + 1
     create_dir("upload", "{}_{}".format(upload_identifier, current))
     target_path = os.path.join("upload", "{}_{}.".format(upload_identifier, current))
+
     try:
-        shutil.copy2(os.path.join(opt.data_dir, "data.npy"), target_path)
-        shutil.copy2(os.path.join(opt.data_dir, "label.npy"), target_path)
+        image_path = glob.glob(os.path.join(opt.data_dir,"*data*.npy"))
+        label_path = glob.glob(os.path.join(opt.data_dir,"*label*.npy"))
+        if len(image_path) != len(label_path) or len(image_path) != 1:
+            print("Multi-implementation of dataset!")
+            raise ValueError
+        shutil.copy2(image_path[0], target_path)
+        shutil.copy2(label_path[0], target_path)
 
     except IOError or FileNotFoundError or FileExistsError or OSError or TypeError:
         print("Unable to move data from {} to {}.".format(opt.data_dir, target_path))

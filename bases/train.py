@@ -8,7 +8,7 @@ from typing import Dict
 
 import torchvision.transforms
 from tqdm import tqdm
-
+import glob
 import numpy as np
 import torch
 import torch.nn as nn
@@ -48,8 +48,44 @@ global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", 
 
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, transform, path):
-        images = np.load(os.path.join(path, 'data.npy'))
-        labels = np.load(os.path.join(path, 'label.npy'))
+        #######################
+        # Modified by adding "allow_pickle" options
+        if os.path.exists(os.path.join(path, 'data.npy')) and os.path.exists(os.path.join(path, 'label.npy')):
+            try:
+                images = np.load(os.path.join(path, 'data.npy'))
+                labels = np.load(os.path.join(path, 'label.npy'))
+            except ValueError:
+                GlobalLogger().get_logger().warning("Load dataset with numpy failed, load with pickle......")
+                try:
+                    images = np.load(os.path.join(path, 'data.npy'), allow_pickle=True)
+                    labels = np.load(os.path.join(path, 'label.npy'), allow_pickle=True)
+                    GlobalLogger().get_logger().info("Load dataset with pickle successful.")
+                except ValueError or FileNotFoundError as e:
+                    GlobalLogger().get_logger().warning("Unable to load dataset!")
+                    raise e
+        else:
+            GlobalLogger().get_logger().warning("Dataset not found, searching renamed-dataset......")
+            image_path = glob.glob(os.path.join(path, "*data*.npy"))
+            label_path = glob.glob(os.path.join(path, "*label*.npy"))
+            if len(image_path) != len(label_path) or len(image_path) != 1:
+                GlobalLogger().get_logger().warning("Multi-implementation of data.npy and label.npy!")
+                raise ValueError
+            try:
+                GlobalLogger().get_logger().warning("Load dataset with renaming dataset......")
+                images = np.load(image_path[0], allow_pickle=False)
+                labels = np.load(label_path[0], allow_pickle=False)
+                GlobalLogger().get_logger().info("Load renamed-dataset with pickle successful.")
+            except ValueError as e:
+                GlobalLogger().get_logger().warning("Load renamed-dataset with numpy failed, load with pickle......")
+                try:
+                    images = np.load(image_path[0], allow_pickle=True)
+                    labels = np.load(label_path[0], allow_pickle=True)
+                    GlobalLogger().get_logger().info("Load renamed-dataset with pickle successful.")
+                except ValueError or FileNotFoundError as e:
+                    GlobalLogger().get_logger().warning("Unable to load renamed-dataset!")
+                    raise e
+        # End modified
+        #######################
         assert labels.min() >= 0
         assert images.dtype == np.uint8
         assert images.shape[0] <= 50000
@@ -189,7 +225,7 @@ def train(opt: Namespace, identifier: str):
 def _train(trainloader, model, optimizer, **kwargs):
     losses = AverageMeter()
     accs = AverageMeter()
-    model.eval()    # Original here
+    model.eval()  # Original here
     # switch to train mode
     model.train()
 
