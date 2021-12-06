@@ -54,4 +54,20 @@ python pack_upload.py --log_name cifar10 --identifier 20211128_213656 --data_dir
 
 Then you can find the packed zip file in ```upload``` directory.
 
-## Data Storage
+## Generate dataset
+
+When generating the dataset:
+
+1. You should select a base dataset, which should be defined as a function in ```functional/generator_function/dataset_function.py```(click [here](functional/generator_function/dataset_function.py)), e.g. ```cifar10_test()```, which can be found in ```dataset_function.py```.
+
+2. Check if your transform can be found in files under the dataset ```functional/generator_function/transforms```(click [here](functional/generator_function/transforms)), if not, you should first add the Transform class into the files under this directory, just follow the ```functional/generator_function/transforms/iaa_transform.py``` and it's very easy.
+
+3. And then add the config to the ```configs/generate_config.py```(click [here](configs/generate_config.py)), which should be defined in format of list, and remember its name.
+
+4. Run the command line. For example:
+```shell
+python generate.py --output_data_path dataset --base_dataset cifar10_test --store_name gaussian_blur --max_length 50000 --config iaa_gaussian_blur --cover
+```
+
+Then the file will be generated at ```dataset/gaussian_blur```, where you can see the ```description.txt``` to log the generation parameters
+

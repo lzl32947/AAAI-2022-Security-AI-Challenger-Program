@@ -79,11 +79,23 @@ def parse_plot_opt() -> argparse.Namespace:
 
 
 def parse_generation_opt() -> argparse.Namespace:
+    """
+    Parse the argument when the generating the dataset
+    :return: argparse.Namespace, the parsed arguments
+    """
     parser = argparse.ArgumentParser(description='Generate options')
+    # The path to the output directory
     parser.add_argument('--output_data_path', type=str, help="The path to the output directory", default="dataset")
-    parser.add_argument('--base_dataset', type=str, help="The basic dataset to use", default="cifar10_test")
+    # The base dataset to use, the given should be a str with the same name in "functional.generator_function.dataset_function"
+    parser.add_argument('--base_dataset', type=str,
+                        help="The basic dataset to use, see \"functional.generator_function.dataset_function\"",
+                        default="cifar10_test")
+    # The name of the generated dataset
     parser.add_argument('--store_name', type=str, help="The name of the dataset", required=True)
+    # The max size of the generated dataset
     parser.add_argument('--max_length', type=int, help="The max size of the generated dataset", default=50000)
-    parser.add_argument('--config', type=str, help="The function to use for generation", required=True)
+    # The config to use, the given should be a str with the same name in "configs.generate_config"
+    parser.add_argument('--config', type=str, help="The function to use for generation, see \"configs.generate_config\"", required=True)
+    # If the previous data exist, then delete it if given the parameter
     parser.add_argument('--cover', action="store_true", help="Whether to cover the dataset if exists")
     return parser.parse_args()

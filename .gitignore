@@ -2,8 +2,9 @@
 checkpoint/
 .gitignore
 bases/data/*
-dataset/cifar*
+dataset/*
 tensorboard
 output
 Shared/
 upload
+temp
