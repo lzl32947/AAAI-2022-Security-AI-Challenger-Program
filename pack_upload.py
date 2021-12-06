@@ -28,8 +28,8 @@ if __name__ == '__main__':
             print("Multi-implementation of dataset!")
             raise ValueError
         # Copy to target
-        shutil.copy2(image_path[0], target_path)
-        shutil.copy2(label_path[0], target_path)
+        shutil.copy2(image_path[0], os.path.join(target_path, "data.npy"))
+        shutil.copy2(label_path[0], os.path.join(target_path, "label.npy"))
 
     except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
         print("Unable to move data from {} to {}.".format(opt.data_dir, target_path))
