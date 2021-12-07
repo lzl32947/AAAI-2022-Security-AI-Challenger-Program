@@ -71,7 +71,7 @@ if __name__ == '__main__':
         # Save description
         with open(os.path.join(target_dir, "description.txt"), "w", encoding="utf-8") as fout:
             fout.write(description)
-    except (NameError, ValueError, FileNotFoundError, FileExistsError,RuntimeError) as e:
+    except (NameError, ValueError, FileNotFoundError, FileExistsError, RuntimeError, KeyboardInterrupt) as e:
         print("Fail to generate the dataset!")
         remove_dir(opt.output_data_path, opt.store_name)
         print(e)
