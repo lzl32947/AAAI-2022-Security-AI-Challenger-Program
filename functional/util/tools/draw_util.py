@@ -1,5 +1,5 @@
 import itertools
-from typing import Union, Tuple
+from typing import Union, Tuple, List, Dict
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -248,3 +248,15 @@ class ImageDrawer(Drawer):
                 ax.set_title(kwargs["title"])
             elif isinstance(kwargs["title"], list) or isinstance(kwargs["title"], tuple):
                 ax.set_title(kwargs["title"][plot_position[-1] - 1])
+
+
+def label_dict2str(label_list: List[Dict]):
+    result_list = []
+    for i in range(len(label_list)):
+        return_str = ""
+        for item in label_list[i].keys():
+            return_str += "{}: {:.1f}%".format(item, label_list[i][item] * 100)
+            return_str += "\n"
+        return_str = return_str[:-1]
+        result_list.append(return_str)
+    return result_list

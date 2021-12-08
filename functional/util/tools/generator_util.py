@@ -21,3 +21,5 @@ def compose_config(config_list: List) -> ImageCompose:
         elif hasattr(m2, item[0]):
             target_list.append(getattr(m2, item[0])(item[1], **item[2]))
     return ImageCompose(target_list)
+
+

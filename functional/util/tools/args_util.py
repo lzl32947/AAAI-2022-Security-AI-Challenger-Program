@@ -72,9 +72,10 @@ def parse_plot_opt() -> argparse.Namespace:
     # The name of the log, used to identify the log and the checkpoints
     parser.add_argument('--log_name', type=str, help='The name of the log')
     # The batch to show
-    parser.add_argument('--batch_size', type=int, help='THe size of a batch', default=16)
+    parser.add_argument('--batch_size', type=int, help='The size of a batch', default=16)
     # The row to plot
-    parser.add_argument('--row', type=int, help='THe size of a batch', default=4)
+    parser.add_argument('--row', type=int, help='The size of a batch', default=4)
+    parser.add_argument('--class_first', action="store_true", help='Show images with same class')
     return parser.parse_args()
 
 
@@ -95,7 +96,8 @@ def parse_generation_opt() -> argparse.Namespace:
     # The max size of the generated dataset
     parser.add_argument('--max_length', type=int, help="The max size of the generated dataset", default=50000)
     # The config to use, the given should be a str with the same name in "configs.generate_config"
-    parser.add_argument('--config', type=str, help="The function to use for generation, see \"configs.generate_config\"", required=True)
+    parser.add_argument('--config', type=str,
+                        help="The function to use for generation, see \"configs.generate_config\"", required=True)
     # If the previous data exist, then delete it if given the parameter
     parser.add_argument('--cover', action="store_true", help="Whether to cover the dataset if exists")
     return parser.parse_args()
