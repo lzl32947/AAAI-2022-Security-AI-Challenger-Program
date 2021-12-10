@@ -226,7 +226,7 @@ def _train(trainloader, model, optimizer, **kwargs):
 
     for index, (inputs, soft_labels) in enumerate(trainloader):
         if "enable_tensorboard" in kwargs.keys() and kwargs[
-            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 100 == 0:
+            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 5000 == 0:
             image_drawer = ImageDrawer(figsize=(32, 16))
             inputs = denormalized(inputs)
             title = []
@@ -285,7 +285,7 @@ def _eval(testdataloader, model, **kwargs):
     model.eval()
     for index, (inputs, soft_labels) in enumerate(testdataloader):
         if "enable_tensorboard" in kwargs.keys() and kwargs[
-            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 100 == 0:
+            "enable_tensorboard"] == True and "epoch" in kwargs.keys() and (index + 1) % 1000 == 0:
             image_drawer = ImageDrawer(figsize=(32, 16))
             inputs = denormalized(inputs)
             title = []
