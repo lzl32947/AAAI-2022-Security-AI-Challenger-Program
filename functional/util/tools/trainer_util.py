@@ -1,4 +1,4 @@
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Dict
 
 import numpy as np
 import torch
@@ -6,7 +6,13 @@ import torch
 global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 
 
-def _process_single_onehot_label(inputs: np.ndarray, top_k):
+def _process_single_onehot_label(inputs: np.ndarray, top_k: int) -> Dict[str,float]:
+    """
+    Get the name and the confidence of the input image
+    :param inputs: np.ndarray, the images
+    :param top_k: int, the results to save in the dict
+    :return: Dict, the name should be the keys and the confidence should be the value
+    """
     inputs = np.squeeze(inputs)
     if len(inputs.shape) > 1:
         return None
@@ -25,12 +31,18 @@ def _process_single_onehot_label(inputs: np.ndarray, top_k):
         return answer_dict
 
 
-def get_label_name(inputs: Union[int, np.ndarray, List, Tuple, torch.Tensor], top_k=3):
+def get_label_name(inputs: Union[int, np.ndarray, List, Tuple, torch.Tensor], top_k=3) -> List[Dict[str,float]]:
+    """
+    Get the name of the label
+    :param inputs: int or np.ndarray or list or torch.Tensor, should be in one-hot code except the int
+    :param top_k: int, the results to save in the dict
+    :return: List[Dict], the results dicts
+    """
     if isinstance(inputs, int):
         if 0 <= inputs < len(global_label):
             return [{global_label[inputs]: 1.0}]
         else:
-            return None
+            return []
     if isinstance(inputs, torch.Tensor):
         if inputs.is_cuda:
             inputs = inputs.detach().cpu()
@@ -46,7 +58,12 @@ def get_label_name(inputs: Union[int, np.ndarray, List, Tuple, torch.Tensor], to
     return result_list
 
 
-def get_class(inputs: Union[int, np.ndarray, List, Tuple, torch.Tensor]):
+def get_class(inputs: Union[int, np.ndarray, List, Tuple, torch.Tensor]) -> np.ndarray:
+    """
+    Get the index of which class should the image be in
+    :param inputs: int or np.ndarray or list or torch.Tensor, should be in one-hot code except the int
+    :return: ndarray[int] the index of the class
+    """
     if isinstance(inputs, int):
         if 0 <= inputs < len(global_label):
             return inputs

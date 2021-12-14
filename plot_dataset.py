@@ -1,6 +1,7 @@
 import glob
 import os.path
 import time
+from multiprocessing import Pool
 
 import numpy as np
 
@@ -14,7 +15,16 @@ from functional.util.tools.trainer_util import get_label_name, get_class
 global_label = ["airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck"]
 
 
-def plot_same_class(args, data_array, label_array, save_path):
+def _draw(data_to_show, label_to_show, rows, batch_size, save_path, save_name):
+    title = label_dict2str(get_label_name(np.array(label_to_show)))
+
+    drawer = ImageDrawer(figsize=(6, 6))
+    drawer.draw_same_batch(data_to_show, rows, title=title)
+    drawer.save_image(os.path.join(save_path, save_name))
+    drawer.clear()
+
+
+def plot_same_class(args, data_array, label_array, save_path, pool):
     length = len(label_array)
 
     classes_index_label = [(i, j, k) for i, j, k in zip(get_class(label_array), label_array, data_array)]
@@ -27,86 +37,69 @@ def plot_same_class(args, data_array, label_array, save_path):
     # Enable tqdm for showing
     bar = tqdm(range(length))
     bar.set_description("Generating images")
+    bs = args.batch_size
     for c in range(0, len(global_label)):
-        image_list = []
-        label_list = []
         data_sub = data_array[classes == c]
         label_sub = label_array[classes == c]
         i = 0
-        while i < len(data_sub):
-            image_list.append(data_array[i])
-            label_list.append(label_array[i])
-            # plot for batch, one image contains "batch_size" numbers of images
-            if len(image_list) >= args.batch_size:
-                image_list = np.array(image_list)
-
-                title = label_dict2str(get_label_name(np.array(label_list)))
-
-                # Create Drawer
-                drawer = ImageDrawer(figsize=(6, 6))
-                drawer.draw_same_batch(image_list, args.row, title=title)
-                drawer.save_image(os.path.join(save_path, "{}-{}.jpg".format(global_label[c], i)))
-                drawer.clear()
-                del drawer
-                # Finish drawing
-                image_list = []
-                label_list = []
-            i += 1
-            bar.update(1)
-
-        # Handle the rest images
-        if len(image_list) > 0:
-            image_list = np.array(image_list)
-            title = label_dict2str(get_label_name(np.array(label_list)))
-            # Create drawer
-            drawer = ImageDrawer()
-            drawer.draw_same_batch(image_list, args.row, title=title)
-            drawer.save_image(os.path.join(save_path, "{}-{}.jpg".format(global_label[c], i)))
-            drawer.clear()
-            del drawer
+        while True:
+            if bs * i >= len(data_sub):
+                if pool is not None:
+                    pool.close()
+                break
+            elif bs * (i + 1) <= len(data_sub):
+                if pool is not None:
+                    pool.apply_async(func=_draw, args=(
+                        data_sub[i * bs:(i + 1) * bs], label_sub[i * bs:(i + 1) * bs], args.row, bs, save_path,
+                        "{}-{}.jpg".format(global_label[c], i)))
+                else:
+                    _draw(data_sub[i * bs:(i + 1) * bs], label_sub[i * bs:(i + 1) * bs], args.row, bs, save_path,
+                          "{}-{}.jpg".format(global_label[c], i))
+                bar.update(bs)
+                i += 1
+            else:
+                if pool is not None:
+                    pool.apply_async(func=_draw, args=(data_sub[i * bs:], label_sub[i * bs:], args.row, bs, save_path,
+                                                       "{}-{}.jpg".format(global_label[c], i)))
+                else:
+                    _draw(data_sub[i * bs:], label_sub[i * bs:], args.row, bs, save_path,
+                          "{}-{}.jpg".format(global_label[c], i))
+                bar.update(len(data_sub) - (i * bs))
+                i += 1
     # Finish
     bar.close()
 
 
-def plot_sequentially(args, data_array, label_array, save_path):
+def plot_sequentially(args, data_array, label_array, save_path, pool):
     length = len(label_array)
-    image_list = []
-    label_list = []
+    bs = args.batch_size
     i = 0
     # Enable tqdm for showing
     bar = tqdm(range(length))
     bar.set_description("Generating images")
-    while i < length:
-        image_list.append(data_array[i])
-        label_list.append(label_array[i])
-        # plot for batch, one image contains "batch_size" numbers of images
-        if len(image_list) >= args.batch_size:
-            image_list = np.array(image_list)
-
-            title = label_dict2str(get_label_name(np.array(label_list)))
-
-            # Create Drawer
-            drawer = ImageDrawer(figsize=(6, 6))
-            drawer.draw_same_batch(image_list, args.row, title=title)
-            drawer.save_image(os.path.join(save_path, "{}.jpg".format(i)))
-            drawer.clear()
-            del drawer
-            # Finish drawing
-            image_list = []
-            label_list = []
-        i += 1
-        bar.update(1)
-
-    # Handle the rest images
-    if len(image_list) > 0:
-        image_list = np.array(image_list)
-        title = label_dict2str(get_label_name(np.array(label_list)))
-        # Create drawer
-        drawer = ImageDrawer()
-        drawer.draw_same_batch(image_list, args.row, title=title)
-        drawer.save_image(os.path.join(save_path, "{}.jpg".format(i)))
-        drawer.clear()
-        del drawer
+    while True:
+        if bs * i >= length:
+            if pool is not None:
+                pool.close()
+            break
+        elif bs * (i + 1) <= length:
+            if pool is not None:
+                pool.apply_async(func=_draw, args=(
+                    data_array[i * bs:(i + 1) * bs], label_array[i * bs:(i + 1) * bs], args.row, bs, save_path,
+                    "{}.jpg".format(i)))
+            else:
+                _draw(data_array[i * bs:(i + 1) * bs], label_array[i * bs:(i + 1) * bs], args.row, bs, save_path,
+                      "{}.jpg".format(i))
+            bar.update(bs)
+            i += 1
+        else:
+            if pool is not None:
+                pool.apply_async(func=_draw, args=(
+                data_array[i * bs:], label_array[i * bs:], args.row, bs, save_path, "{}.jpg".format(i)))
+            else:
+                _draw(data_array[i * bs:], label_array[i * bs:], args.row, bs, save_path, "{}.jpg".format(i))
+            bar.update(len(data_array) - (i * bs))
+            i += 1
     # Finish
     bar.close()
 
@@ -118,6 +111,9 @@ if __name__ == '__main__':
     run_time = time.strftime("%Y%m%d_%H%M%S", time.localtime())
 
     try:
+        # Test Multi-Processing but low-memory
+        # threading_pool = Pool(4)
+
         # Get the data and the label
         image_path = glob.glob(os.path.join(opt.data_dir, "*data*.npy"))
         label_path = glob.glob(os.path.join(opt.data_dir, "*label*.npy"))
@@ -140,9 +136,9 @@ if __name__ == '__main__':
         assert data_.shape[1:] == (32, 32, 3)
         assert label_.shape[1:] == (10,)
         if opt.class_first:
-            plot_same_class(opt, data_, label_, target_dir)
+            plot_same_class(opt, data_, label_, target_dir, None)
         else:
-            plot_sequentially(opt, data_, label_, target_dir)
+            plot_sequentially(opt, data_, label_, target_dir, None)
 
     except (Exception, IOError, FileNotFoundError, KeyboardInterrupt) as e:
         remove_dir(opt.output_dir, opt.log_name, run_time)

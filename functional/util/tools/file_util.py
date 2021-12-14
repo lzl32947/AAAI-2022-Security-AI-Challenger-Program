@@ -7,8 +7,6 @@ from typing import Dict
 import yaml
 
 from functional.util.logger.logger import GlobalLogger
-
-# DEPRECATED
 from functional.util.logger.tensorboards import GlobalTensorboard
 
 

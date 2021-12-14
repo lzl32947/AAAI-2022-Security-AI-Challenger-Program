@@ -3,11 +3,9 @@
 
 args_resnet = {
     'epochs': 200,  # 200 for original
-    'optimizer_name': 'SGD',
+    'optimizer_name': 'AdamW',
     'optimizer_hyperparameters': {
         'lr': 0.001,
-        'momentum': 0.9,
-        'weight_decay': 1e-4
     },
     'scheduler_name': 'CosineAnnealingLR',
     'scheduler_hyperparameters': {
@@ -17,13 +15,11 @@ args_resnet = {
 }
 args_densenet = {
     'epochs': 200,
-    'optimizer_name': 'SGD',
+    'optimizer_name': 'AdamW',
     'optimizer_hyperparameters': {
         'lr': 0.001,
-        'momentum': 0.9,
-        'weight_decay': 1e-4
     },
-    'scheduler_name': 'CosineAnnealingLR', # Add the learning rate scheduler
+    'scheduler_name': 'CosineAnnealingLR',
     'scheduler_hyperparameters': {
         'T_max': 200
     },
