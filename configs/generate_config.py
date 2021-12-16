@@ -5,15 +5,26 @@ null = [
 ]
 
 iaa_gaussian_blur = {
-    "image_use": 1,
-    "procedures":
+    "config": {"use_images": 1},
+    "procedures": [
         [
             ["IAAGaussianBlur", 0.8, {"sigma": (3, 5)}]
         ],
+    ]
+}
+
+vertical_cutup_blur = {
+    "config": {"use_images": 2},
+    "procedures": [
+        [
+            ["VerticalCutup", 1, {}],
+            ["IAAGaussianBlur", 1, {"sigma": (0, 3)}]
+        ]
+    ]
 }
 
 separate_gaussian_blur = {
-    "image_use": 1,
+    "config": {"use_images": 1},
     "procedures": [
         [
             ["IAAGaussianBlur", 1, {"sigma": (0, 0.6)}]

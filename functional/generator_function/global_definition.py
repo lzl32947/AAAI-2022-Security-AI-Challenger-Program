@@ -4,6 +4,8 @@ from typing import Union, List, Tuple, Optional, Iterable, Sized
 from tqdm import tqdm
 import numpy as np
 
+from functional.generator_function.dataset_function import RuntimeDataset
+
 
 class ImageTransforms:
     """
@@ -32,7 +34,7 @@ class ImageTransforms:
         pass
 
     @abstractmethod
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
+    def __call__(self, image: np.ndarray, label: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         pass
 
 
@@ -56,11 +58,11 @@ class ImageCompose:
         else:
             self.transforms = []
 
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
+    def __call__(self, image: np.ndarray, label: np.ndarray, *args, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
         if len(self.transforms) != 0:
             # Sequentially perform the transform
             for t in self.transforms:
-                image, label = t(image, label)
+                image, label = t(image, label, *args, **kwargs)
         return image, label
 
     def __str__(self) -> str:
@@ -83,16 +85,16 @@ class ArgumentRunnable:
     The implementation of runnable of image argumentation
     """
 
-    def __init__(self, dataset: Iterable, transform: ImageCompose) -> None:
+    def __init__(self, dataset: RuntimeDataset, transform: ImageCompose) -> None:
         """
         Init the dataset and the transform
-        :param dataset: Iterable, the base dataset
+        :param dataset: RuntimeDataset, the base dataset
         :param transform: ImageCompose, the transform to perform
         """
         self.dataset = dataset
         self.transform = transform
 
-    def __call__(self, *args, **kwargs) -> (np.ndarray, np.ndarray):
+    def __call__(self, *args, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
         """
         Run transform
         :param args: None
@@ -104,12 +106,14 @@ class ArgumentRunnable:
         bar = tqdm(range(len(self.dataset)))
         bar.set_description("Generating the dataset from base")
         for image, label in self.dataset:
-            image = np.array(image, dtype=np.uint8)
-            # Set to one hot
-            if isinstance(label, int):
-                label = self.to_one_hot(label)
-            label = np.array(label)
-            image, label = self.transform(image, label)
+            if "use_images" in kwargs.keys() and kwargs["use_images"] == 2:
+                extra_index = random.randint(0, len(self.dataset)-1)
+                extra_image = self.dataset[extra_index][0]
+                extra_label = self.dataset[extra_index][1]
+
+                image, label = self.transform(image, label, extra_image, extra_label)
+            else:
+                image, label = self.transform(image, label)
             data_list.append(image)
             label_list.append(label)
             bar.update(1)

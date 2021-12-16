@@ -24,10 +24,10 @@ class IAAImageTransform(ImageTransforms):
         pass
 
     @abstractmethod
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
+    def __call__(self, image: np.ndarray, label: np.ndarray, *args, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
         pass
 
-    def basic_transform(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
+    def basic_transform(self, image: np.ndarray, label: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """
         Basic transform, which means the label not changed during the transform
         :param image: np.ndarray, the image
@@ -52,7 +52,7 @@ class IAAGaussianBlur(IAAImageTransform):
         self.kwargs = kwargs
         self.transform = iaa.GaussianBlur(**self.kwargs)
 
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
+    def __call__(self, image: np.ndarray, label: np.ndarray, *args, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
         return self.basic_transform(image, label)
 
     def __str__(self):

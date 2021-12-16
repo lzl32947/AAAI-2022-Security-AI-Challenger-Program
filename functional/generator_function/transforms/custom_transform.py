@@ -1,44 +1,26 @@
 from abc import abstractmethod
+from typing import Tuple
 
 import numpy as np
 
 from functional.generator_function.global_definition import ImageTransforms
 
 
-class CustomImageTransform(ImageTransforms):
+class VerticalCutup(ImageTransforms):
     """
-    The implementation for iaa(imgaug) in transform
-    """
-
-    def __init__(self, threshold: float) -> None:
-        """
-        Init, threshold for the possible to perform this transform
-        :param threshold: float, the possible to perform this transform
-        """
-        super().__init__(threshold)
-
-    @abstractmethod
-    def __str__(self):
-        pass
-
-    @abstractmethod
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
-        pass
-
-
-
-class Cutup(CustomImageTransform):
-    """
-    Gaussian Blur implementation in iaa
+    Gaussian Blur implementation in
     """
 
     def __init__(self, threshold: float, **kwargs):
         super().__init__(threshold)
         self.kwargs = kwargs
-        self.transform = iaa.GaussianBlur(**self.kwargs)
 
-    def __call__(self, image: np.ndarray, label: np.ndarray) -> (np.ndarray, np.ndarray):
-        return self.basic_transform(image, label)
+    def __call__(self, image: np.ndarray, label: np.ndarray, *args) -> Tuple[np.ndarray, np.ndarray]:
+        extra_image, extra_label = args[0], args[1]
+        width = extra_image.shape[1] // 2
+        image[:, width:,:] = extra_image[:, width:,:]
+        label = (label + extra_label) / np.sum(label + extra_label)
+        return image, label
 
     def __str__(self):
-        return "IAA.GaussianBlur: {}, {}".format(self.threshold, self.kwargs)
+        return "VerticalCutup: {}, {}".format(self.threshold, self.kwargs)

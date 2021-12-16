@@ -58,7 +58,7 @@ if __name__ == '__main__':
             print("{} not found!".format(opt.base_dataset))
             raise RuntimeError
         # Compose the transforms
-        composed_transform_list = compose_config(config)
+        composed_transform_list, runnable_config = compose_config(config)
         # Set the description
         general_description = []
         # Set the data and label
@@ -71,7 +71,7 @@ if __name__ == '__main__':
             # Generate the runnable
             runnable = ArgumentRunnable(datasets, composed_transform)
             # Execute the runnable
-            data, label = runnable()
+            data, label = runnable(**runnable_config)
             # Get the description
             description = str(composed_transform)
             # Add the description and data etc.
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         # Save description
         with open(os.path.join(target_dir, "description.txt"), "w", encoding="utf-8") as fout:
             fout.write("\n".join(general_description))
-    except (NameError, ValueError, FileNotFoundError, FileExistsError, RuntimeError) as e:
+    except (NameError, ValueError,TypeError, FileNotFoundError, FileExistsError, RuntimeError, KeyboardInterrupt,AssertionError) as e:
         print("Fail to generate the dataset!")
         remove_dir(opt.output_data_path, opt.store_name)
-        print(e)
+        raise e
