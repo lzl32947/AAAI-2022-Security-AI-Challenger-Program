@@ -58,20 +58,42 @@ if __name__ == '__main__':
             print("{} not found!".format(opt.base_dataset))
             raise RuntimeError
         # Compose the transforms
-        composed_transform = compose_config(config)
-        # Generate the runnable
-        runnable = ArgumentRunnable(datasets, composed_transform)
-        # Execute the runnable
-        data, label = runnable()
-        # Get the description
-        description = str(composed_transform)
+        composed_transform_list = compose_config(config)
+        # Set the description
+        general_description = []
+        # Set the data and label
+        general_data = []
+        general_label = []
+        global_counter = 0
+        # Perform the transform
+        for index in range(len(composed_transform_list)):
+            composed_transform = composed_transform_list[index]
+            # Generate the runnable
+            runnable = ArgumentRunnable(datasets, composed_transform)
+            # Execute the runnable
+            data, label = runnable()
+            # Get the description
+            description = str(composed_transform)
+            # Add the description and data etc.
+            general_description.append(description)
+            general_label.append(label)
+            general_data.append(data)
+            # Add the counter
+            global_counter += len(data)
+            # If over-create
+            if global_counter > max_length:
+                raise RuntimeError("Create more data than the maximum count!")
+        # Transform the data and label
+        general_data = np.concatenate(general_data, axis=0)
+        general_label = np.concatenate(general_label, axis=0)
+
         # Save data
-        np.save(os.path.join(target_dir, "data.npy"), data)
-        np.save(os.path.join(target_dir, "label.npy"), label)
+        np.save(os.path.join(target_dir, "data.npy"), general_data)
+        np.save(os.path.join(target_dir, "label.npy"), general_label)
         # Save description
         with open(os.path.join(target_dir, "description.txt"), "w", encoding="utf-8") as fout:
-            fout.write(description)
-    except (NameError, ValueError, FileNotFoundError, FileExistsError, RuntimeError, KeyboardInterrupt) as e:
+            fout.write("\n".join(general_description))
+    except (NameError, ValueError, FileNotFoundError, FileExistsError, RuntimeError) as e:
         print("Fail to generate the dataset!")
         remove_dir(opt.output_data_path, opt.store_name)
         print(e)

@@ -1,0 +1,52 @@
+2021-12-07 13:01:27,640 - trainer.py[line:25] - INFO: Running with identifier 20211207_130127
+2021-12-07 13:01:27,640 - trainer.py[line:27] - INFO: Saving log to log\gaussian_test\20211207_130127\run.log
+2021-12-07 13:01:27,640 - trainer.py[line:28] - INFO: Using args: [('log_name', 'gaussian_test'), ('data_train', 'dataset/gaussian_test_train'), ('data_eval', 'dataset/gaussian_test_eval'), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 10), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
+2021-12-07 13:01:27,643 - trainer.py[line:39] - INFO: Using tensorboard, store at: tensorboard\gaussian_test\20211207_130127
+2021-12-07 13:01:27,643 - trainer.py[line:40] - INFO: Using training data: dataset/gaussian_test_train
+2021-12-07 13:01:27,643 - trainer.py[line:42] - INFO: Pack this file using this command if training finished: --log_dir log --log_name gaussian_test --identifier 20211207_130127 --output_checkpoint_dir checkpoint --data_dir dataset/gaussian_test_train
+2021-12-07 13:01:27,643 - train.py[line:128] - INFO: Running model resnet50
+2021-12-07 13:03:45,736 - train.py[line:188] - INFO: Epoch 10 with acc in evaluation: 22.50
+2021-12-07 13:03:45,736 - train.py[line:190] - INFO: Epoch 10 with acc in training: 19.74
+2021-12-07 13:06:04,216 - train.py[line:188] - INFO: Epoch 20 with acc in evaluation: 31.10
+2021-12-07 13:06:04,216 - train.py[line:190] - INFO: Epoch 20 with acc in training: 29.59
+2021-12-07 13:08:18,995 - train.py[line:188] - INFO: Epoch 30 with acc in evaluation: 39.20
+2021-12-07 13:08:18,996 - train.py[line:190] - INFO: Epoch 30 with acc in training: 38.85
+2021-12-07 13:10:33,930 - train.py[line:188] - INFO: Epoch 40 with acc in evaluation: 43.10
+2021-12-07 13:10:33,930 - train.py[line:190] - INFO: Epoch 40 with acc in training: 44.25
+2021-12-07 13:12:49,233 - train.py[line:188] - INFO: Epoch 50 with acc in evaluation: 47.65
+2021-12-07 13:12:49,234 - train.py[line:190] - INFO: Epoch 50 with acc in training: 48.99
+2021-12-07 13:15:04,399 - train.py[line:188] - INFO: Epoch 60 with acc in evaluation: 50.10
+2021-12-07 13:15:04,400 - train.py[line:190] - INFO: Epoch 60 with acc in training: 52.26
+2021-12-07 13:17:19,579 - train.py[line:188] - INFO: Epoch 70 with acc in evaluation: 49.70
+2021-12-07 13:17:19,580 - train.py[line:190] - INFO: Epoch 70 with acc in training: 57.51
+2021-12-07 13:19:35,228 - train.py[line:188] - INFO: Epoch 80 with acc in evaluation: 50.60
+2021-12-07 13:19:35,229 - train.py[line:190] - INFO: Epoch 80 with acc in training: 61.29
+2021-12-07 13:21:50,517 - train.py[line:188] - INFO: Epoch 90 with acc in evaluation: 51.80
+2021-12-07 13:21:50,517 - train.py[line:190] - INFO: Epoch 90 with acc in training: 65.31
+2021-12-07 13:24:05,543 - train.py[line:188] - INFO: Epoch 100 with acc in evaluation: 53.30
+2021-12-07 13:24:05,543 - train.py[line:190] - INFO: Epoch 100 with acc in training: 70.08
+2021-12-07 13:24:05,832 - train.py[line:213] - INFO: Best acc in training: 70.34
+2021-12-07 13:24:05,832 - train.py[line:215] - INFO: Best acc in evaluation: 53.30
+2021-12-07 13:24:05,832 - train.py[line:128] - INFO: Running model densenet121
+2021-12-07 13:26:12,213 - train.py[line:188] - INFO: Epoch 10 with acc in evaluation: 46.80
+2021-12-07 13:26:12,213 - train.py[line:190] - INFO: Epoch 10 with acc in training: 52.39
+2021-12-07 13:28:17,852 - train.py[line:188] - INFO: Epoch 20 with acc in evaluation: 52.90
+2021-12-07 13:28:17,852 - train.py[line:190] - INFO: Epoch 20 with acc in training: 67.25
+2021-12-07 13:30:42,831 - train.py[line:188] - INFO: Epoch 30 with acc in evaluation: 59.55
+2021-12-07 13:30:42,831 - train.py[line:190] - INFO: Epoch 30 with acc in training: 78.45
+2021-12-07 13:33:07,420 - train.py[line:188] - INFO: Epoch 40 with acc in evaluation: 61.25
+2021-12-07 13:33:07,421 - train.py[line:190] - INFO: Epoch 40 with acc in training: 85.15
+2021-12-07 13:35:34,636 - train.py[line:188] - INFO: Epoch 50 with acc in evaluation: 61.75
+2021-12-07 13:35:34,636 - train.py[line:190] - INFO: Epoch 50 with acc in training: 89.47
+2021-12-07 13:37:58,688 - train.py[line:188] - INFO: Epoch 60 with acc in evaluation: 61.45
+2021-12-07 13:37:58,688 - train.py[line:190] - INFO: Epoch 60 with acc in training: 91.99
+2021-12-07 13:40:20,538 - train.py[line:188] - INFO: Epoch 70 with acc in evaluation: 62.20
+2021-12-07 13:40:20,538 - train.py[line:190] - INFO: Epoch 70 with acc in training: 94.85
+2021-12-07 13:42:42,551 - train.py[line:188] - INFO: Epoch 80 with acc in evaluation: 64.00
+2021-12-07 13:42:42,551 - train.py[line:190] - INFO: Epoch 80 with acc in training: 95.11
+2021-12-07 13:45:04,907 - train.py[line:188] - INFO: Epoch 90 with acc in evaluation: 63.25
+2021-12-07 13:45:04,907 - train.py[line:190] - INFO: Epoch 90 with acc in training: 95.96
+2021-12-07 13:47:27,335 - train.py[line:188] - INFO: Epoch 100 with acc in evaluation: 64.05
+2021-12-07 13:47:27,335 - train.py[line:190] - INFO: Epoch 100 with acc in training: 96.86
+2021-12-07 13:47:27,410 - train.py[line:213] - INFO: Best acc in training: 97.00
+2021-12-07 13:47:27,410 - train.py[line:215] - INFO: Best acc in evaluation: 64.05

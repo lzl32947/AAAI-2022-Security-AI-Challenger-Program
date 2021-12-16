@@ -1,7 +1,7 @@
 import random
 from abc import abstractmethod, ABC
-from typing import Union, List, Tuple, Optional, Iterable
-
+from typing import Union, List, Tuple, Optional, Iterable, Sized
+from tqdm import tqdm
 import numpy as np
 
 
@@ -101,6 +101,8 @@ class ArgumentRunnable:
         """
         data_list = []
         label_list = []
+        bar = tqdm(range(len(self.dataset)))
+        bar.set_description("Generating the dataset from base")
         for image, label in self.dataset:
             image = np.array(image, dtype=np.uint8)
             # Set to one hot
@@ -110,6 +112,8 @@ class ArgumentRunnable:
             image, label = self.transform(image, label)
             data_list.append(image)
             label_list.append(label)
+            bar.update(1)
+        bar.close()
         data_list = np.array(data_list)
         label_list = np.array(label_list)
         return data_list, label_list
