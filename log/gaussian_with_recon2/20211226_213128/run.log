@@ -1,0 +1,16 @@
+2021-12-26 21:31:28,010 - trainer.py[line:26] - INFO: Running with identifier 20211226_213128
+2021-12-26 21:31:28,010 - trainer.py[line:28] - INFO: Saving log to log\gaussian_with_recon2\20211226_213128\run.log
+2021-12-26 21:31:28,010 - trainer.py[line:29] - INFO: Using args: [('log_name', 'gaussian_with_recon2'), ('data_train', 'Shared/155'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
+2021-12-26 21:31:28,015 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\gaussian_with_recon2\20211226_213128
+2021-12-26 21:31:28,015 - trainer.py[line:41] - INFO: Using training data: Shared/155
+2021-12-26 21:31:28,015 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name gaussian_with_recon2 --identifier 20211226_213128 --output_checkpoint_dir checkpoint --data_dir Shared/155
+2021-12-26 21:31:28,015 - train.py[line:128] - INFO: Running model resnet50
+2021-12-26 21:31:28,016 - train.py[line:62] - WARNING: Dataset not found, searching renamed-dataset......
+2021-12-26 21:31:28,016 - train.py[line:69] - WARNING: Load dataset with renaming dataset......
+2021-12-26 21:31:29,203 - train.py[line:72] - INFO: Load renamed-dataset with pickle successful.
+2021-12-27 04:34:41,140 - train.py[line:213] - INFO: Best acc in training: 99.99
+2021-12-27 04:34:41,142 - train.py[line:128] - INFO: Running model densenet121
+2021-12-27 04:34:41,143 - train.py[line:62] - WARNING: Dataset not found, searching renamed-dataset......
+2021-12-27 04:34:41,144 - train.py[line:69] - WARNING: Load dataset with renaming dataset......
+2021-12-27 04:34:42,379 - train.py[line:72] - INFO: Load renamed-dataset with pickle successful.
+2021-12-27 17:08:06,122 - train.py[line:213] - INFO: Best acc in training: 99.89

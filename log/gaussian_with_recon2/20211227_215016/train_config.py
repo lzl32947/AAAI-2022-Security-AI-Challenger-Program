@@ -23,7 +23,7 @@ args_densenet = {
         'momentum': 0.9,
         'weight_decay': 1e-4
     },
-    'scheduler_name': 'CosineAnnealingLR', # Add the learning rate scheduler
+    'scheduler_name': 'CosineAnnealingLR',  # Add the learning rate scheduler
     'scheduler_hyperparameters': {
         'T_max': 200
     },

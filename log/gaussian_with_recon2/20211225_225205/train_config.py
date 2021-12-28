@@ -5,7 +5,7 @@ args_resnet = {
     'epochs': 200,  # 200 for original
     'optimizer_name': 'SGD',
     'optimizer_hyperparameters': {
-        'lr': 0.05,
+        'lr': 0.01,
         'momentum': 0.9,
         'weight_decay': 1e-4
     },
@@ -19,11 +19,11 @@ args_densenet = {
     'epochs': 200,
     'optimizer_name': 'SGD',
     'optimizer_hyperparameters': {
-        'lr': 0.05,
+        'lr': 0.01,
         'momentum': 0.9,
         'weight_decay': 1e-4
     },
-    'scheduler_name': 'CosineAnnealingLR', # Add the learning rate scheduler
+    'scheduler_name': 'CosineAnnealingLR',  # Add the learning rate scheduler
     'scheduler_hyperparameters': {
         'T_max': 200
     },

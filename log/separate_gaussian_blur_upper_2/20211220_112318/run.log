@@ -1,0 +1,10 @@
+2021-12-20 11:23:18,216 - trainer.py[line:26] - INFO: Running with identifier 20211220_112318
+2021-12-20 11:23:18,217 - trainer.py[line:28] - INFO: Saving log to log\separate_gaussian_blur_upper_2\20211220_112318\run.log
+2021-12-20 11:23:18,217 - trainer.py[line:29] - INFO: Using args: [('log_name', 'separate_gaussian_blur_upper_2'), ('data_train', 'dataset/separate_gaussian_blur_upper_2'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
+2021-12-20 11:23:18,220 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\separate_gaussian_blur_upper_2\20211220_112318
+2021-12-20 11:23:18,220 - trainer.py[line:41] - INFO: Using training data: dataset/separate_gaussian_blur_upper_2
+2021-12-20 11:23:18,220 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name separate_gaussian_blur_upper_2 --identifier 20211220_112318 --output_checkpoint_dir checkpoint --data_dir dataset/separate_gaussian_blur_upper_2
+2021-12-20 11:23:18,220 - train.py[line:128] - INFO: Running model resnet50
+2021-12-20 16:48:32,469 - train.py[line:213] - INFO: Best acc in training: 100.00
+2021-12-20 16:48:32,494 - train.py[line:128] - INFO: Running model densenet121
+2021-12-21 03:59:03,850 - train.py[line:213] - INFO: Best acc in training: 100.00
