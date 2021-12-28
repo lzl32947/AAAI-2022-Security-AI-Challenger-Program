@@ -58,3 +58,16 @@ class IAAGaussianBlur(IAAImageTransform):
 
     def __str__(self):
         return "IAA.GaussianBlur: {}, {}".format(self.threshold, self.kwargs)
+
+
+class IAAAdditiveGaussianNoise(IAAImageTransform):
+    def __init__(self, threshold: float, **kwargs):
+        super().__init__(threshold)
+        self.kwargs = kwargs
+        self.transform = iaa.AdditiveGaussianNoise(**self.kwargs)
+
+    def __str__(self):
+        return "IAA.AdditiveGaussianNoise: {}, {}".format(self.threshold, self.kwargs)
+
+    def __call__(self, image: np.ndarray, label: np.ndarray, *args, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
+        return self.basic_transform(image, label)

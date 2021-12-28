@@ -56,7 +56,6 @@ separate_gaussian_blur = {
     ]
 }
 
-
 separate_gaussian_blur_upper_2 = {
     "config": {"use_images": 1},
     "procedures": [
@@ -95,6 +94,32 @@ separate_gaussian_blur_upper = {
         ],
         [
             ["IAAGaussianBlur", 1, {"sigma": (3.4, 4.0)}]
+        ],
+    ]
+}
+
+gaussian_noise_with_blur = {
+    "config": {"use_images": 1},
+    "procedures": [
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (0, 15.3), "per_channel": 0.5}],
+            ["IAAGaussianBlur", 1, {"sigma": (0, 0.3)}]
+        ],
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (15.3, 30.6), "per_channel": 0.5}],
+            ["IAAGaussianBlur", 1, {"sigma": (0.3, 0.6)}]
+        ],
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (30.6, 45.9), "per_channel": 0.5}],
+            ["IAAGaussianBlur", 1, {"sigma": (0.9, 0.6)}]
+        ],
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (45.9, 61.2), "per_channel": 0.5}],
+            ["IAAGaussianBlur", 1, {"sigma": (0.9, 1.2)}]
+        ],
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (61.2, 76.5), "per_channel": 0.5}],
+            ["IAAGaussianBlur", 1, {"sigma": (1.2, 1.5)}]
         ],
     ]
 }
