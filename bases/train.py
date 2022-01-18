@@ -1,23 +1,23 @@
 from __future__ import print_function
 
+import glob
 import os
 import random
 from argparse import Namespace
 
-import torchvision.transforms
-from tqdm import tqdm
-import glob
 import numpy as np
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data as data
+import torchvision.transforms
 import torchvision.transforms as transforms
 from PIL import Image
-from configs.train_config import args_resnet, args_densenet
-from functional.util.logger.logger import GlobalLogger
-from bases.utils import load_model, AverageMeter, accuracy
+from tqdm import tqdm
 
+from bases.utils import load_model, AverageMeter, accuracy
+from configs.train_config import args_wideresnet, args_preactresnet18
+from functional.util.logger.logger import GlobalLogger
 # Use CUDA
 from functional.util.logger.tensorboards import GlobalTensorboard
 from functional.util.tools.draw_util import ImageDrawer
@@ -124,13 +124,16 @@ def train(opt: Namespace, identifier: str):
     best_acc_list = dict()
     # End modify
     #######################
-    for arch in ['resnet50', 'densenet121']:
-        GlobalLogger().get_logger().info("Running model {}".format(arch))
-        if arch == 'resnet50':
-            args = args_resnet
+    for arch in ['preactresnet18', 'wideresnet']:
+        if arch == 'wideresnet':
+            args = args_wideresnet
         else:
-            args = args_densenet
+            args = args_preactresnet18
         assert args['epochs'] <= 200
+        if args['batch_size'] > 256:
+            # force the batch_size to 256, and scaling the lr
+            args['optimizer_hyperparameters']['lr'] *= 256 / args['batch_size']
+            args['batch_size'] = 256
         # Data
         transform_train = transforms.Compose([
             transforms.RandomCrop(32, padding=4),
@@ -256,11 +259,11 @@ def _train(trainloader, model, optimizer, **kwargs):
 #######################
 # Modified by adding the following functions
 def evaluate(dataset_path: str, weight_path: str):
-    for arch in ['resnet50', 'densenet121']:
-        if arch == 'resnet50':
-            args = args_resnet
+    for arch in ['preactresnet18', 'wideresnet']:
+        if arch == 'wideresnet':
+            args = args_wideresnet
         else:
-            args = args_densenet
+            args = args_preactresnet18
         # Data
         testset = MyDataset(transform=None, path=dataset_path)
         testdataloader = data.DataLoader(testset, batch_size=args['batch_size'], shuffle=True, num_workers=4)

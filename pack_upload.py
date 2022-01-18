@@ -3,6 +3,7 @@ import os
 import shutil
 import time
 import zipfile
+
 from functional.util.tools.args_util import parse_pack_opt
 from functional.util.tools.file_util import create_dir, remove_dir
 
@@ -31,20 +32,22 @@ if __name__ == '__main__':
         shutil.copy2(image_path[0], os.path.join(target_path, "data.npy"))
         shutil.copy2(label_path[0], os.path.join(target_path, "label.npy"))
 
-    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError) as e:
         print("Unable to move data from {} to {}.".format(opt.data_dir, target_path))
         remove_dir("upload", "{}_{}".format(upload_identifier, current))
+        raise e
         exit(-1)
     try:
         # Copy and rename the config to target
         shutil.copy2(os.path.join(opt.log_dir, opt.log_name, opt.identifier, "train_config.py"),
                      os.path.join(target_path, "config.py"))
 
-    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError) as e:
         print("Unable to move config from {} to {}.".format(
             os.path.join(opt.log_dir, opt.log_name, opt.identifier, "train_config.py"),
             os.path.join(target_path, "config.py")))
         remove_dir("upload", "{}_{}".format(upload_identifier, current))
+        raise e
         exit(-1)
 
     try:
@@ -54,11 +57,12 @@ if __name__ == '__main__':
         shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "resnet50.pth.tar"),
                      target_path)
 
-    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError):
+    except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError) as e:
         print("Unable to move weight from {} to {}".format(
             os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier),
             target_path))
         remove_dir("upload", "{}_{}".format(upload_identifier, current))
+        raise e
         exit(-1)
 
     # Generate the Dataset.zip

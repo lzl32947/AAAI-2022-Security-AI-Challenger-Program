@@ -1,0 +1,10 @@
+2022-01-17 13:39:43,495 - trainer.py[line:26] - INFO: Running with identifier 20220117_133943
+2022-01-17 13:39:43,495 - trainer.py[line:28] - INFO: Saving log to log\simi_final_gaussian_train\20220117_133943\run.log
+2022-01-17 13:39:43,495 - trainer.py[line:29] - INFO: Using args: [('log_name', 'simi_final_gaussian_train'), ('data_train', 'dataset/simi_final_gaussian_train'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
+2022-01-17 13:39:43,497 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\simi_final_gaussian_train\20220117_133943
+2022-01-17 13:39:43,499 - trainer.py[line:41] - INFO: Using training data: dataset/simi_final_gaussian_train
+2022-01-17 13:39:43,499 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name simi_final_gaussian_train --identifier 20220117_133943 --output_checkpoint_dir checkpoint --data_dir dataset/simi_final_gaussian_train
+2022-01-17 13:39:43,499 - train.py[line:128] - INFO: Running model resnet50
+2022-01-17 18:30:47,017 - train.py[line:213] - INFO: Best acc in training: 99.99
+2022-01-17 18:30:47,017 - train.py[line:128] - INFO: Running model densenet121
+2022-01-18 02:59:50,684 - train.py[line:213] - INFO: Best acc in training: 99.74

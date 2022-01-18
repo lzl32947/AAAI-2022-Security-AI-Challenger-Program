@@ -123,3 +123,12 @@ gaussian_noise_with_blur = {
         ],
     ]
 }
+
+semi_final_gaussian_train = {
+    "config": {"use_images": 1},
+    "procedures": [
+        [
+            ["IAAGaussianBlur", 1, {"sigma": (0, 3)}]
+        ],
+    ]
+}

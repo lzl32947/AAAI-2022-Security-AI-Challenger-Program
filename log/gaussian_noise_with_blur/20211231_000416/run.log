@@ -1,0 +1,10 @@
+2021-12-31 00:04:16,540 - trainer.py[line:26] - INFO: Running with identifier 20211231_000416
+2021-12-31 00:04:16,540 - trainer.py[line:28] - INFO: Saving log to log\gaussian_noise_with_blur\20211231_000416\run.log
+2021-12-31 00:04:16,540 - trainer.py[line:29] - INFO: Using args: [('log_name', 'gaussian_noise_with_blur'), ('data_train', 'dataset/gaussian_noise_with_blur'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
+2021-12-31 00:04:16,543 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\gaussian_noise_with_blur\20211231_000416
+2021-12-31 00:04:16,543 - trainer.py[line:41] - INFO: Using training data: dataset/gaussian_noise_with_blur
+2021-12-31 00:04:16,543 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name gaussian_noise_with_blur --identifier 20211231_000416 --output_checkpoint_dir checkpoint --data_dir dataset/gaussian_noise_with_blur
+2021-12-31 00:04:16,543 - train.py[line:128] - INFO: Running model resnet50
+2021-12-31 07:21:03,858 - train.py[line:213] - INFO: Best acc in training: 100.00
+2021-12-31 07:21:03,859 - train.py[line:128] - INFO: Running model densenet121
+2021-12-31 20:19:47,512 - train.py[line:213] - INFO: Best acc in training: 99.99
