@@ -128,7 +128,16 @@ semi_final_gaussian_train = {
     "config": {"use_images": 1},
     "procedures": [
         [
-            ["IAAGaussianBlur", 1, {"sigma": (0, 3)}]
+            ["IAAGaussianBlur", 1, {"sigma": (0, 1.5)}]
+        ],
+    ]
+}
+
+semi_final_gaussian_noise_train = {
+    "config": {"use_images": 1},
+    "procedures": [
+        [
+            ["IAAAdditiveGaussianNoise", 1, {"scale": (0, 76.5), "per_channel": 0.5}],
         ],
     ]
 }

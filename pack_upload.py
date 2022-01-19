@@ -52,9 +52,9 @@ if __name__ == '__main__':
 
     try:
         # Copy the weight files to target
-        shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "densenet121.pth.tar"),
+        shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "preactresnet18.pth.tar"),
                      target_path)
-        shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "resnet50.pth.tar"),
+        shutil.copy2(os.path.join(opt.output_checkpoint_dir, opt.log_name, opt.identifier, "wideresnet.pth.tar"),
                      target_path)
 
     except (IOError, FileNotFoundError, FileExistsError, OSError, TypeError) as e:
@@ -73,8 +73,8 @@ if __name__ == '__main__':
     zfile.write("data.npy")
     zfile.write("label.npy")
     zfile.write("config.py")
-    zfile.write("densenet121.pth.tar")
-    zfile.write("resnet50.pth.tar")
+    zfile.write("preactresnet18.pth.tar")
+    zfile.write("wideresnet.pth.tar")
     zfile.close()
     # Finish
     print("Finish generate the Dataset.zip in {}.".format(target_path))
