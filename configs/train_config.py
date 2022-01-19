@@ -16,7 +16,7 @@ args_preactresnet18 = {
     'epochs': 200,
     'optimizer_name': 'SGD',
     'optimizer_hyperparameters': {
-        'lr': 0.01,
+        'lr': 0.1,
         'momentum': 0.9,
         'weight_decay': 1e-4
     },
