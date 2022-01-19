@@ -1,3 +1,0 @@
-2021-11-28 21:36:56,886 - main.py[line:24] - INFO: Running with identifier 20211128_213656
-2021-11-28 21:36:56,886 - main.py[line:26] - INFO: Saving log to log\cifar10\20211128_213656\run.log
-2021-11-28 22:26:02,820 - train.py[line:144] - INFO: Best acc in evaluation: 87.18

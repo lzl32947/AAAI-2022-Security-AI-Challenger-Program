@@ -1,7 +1,0 @@
-2022-01-18 10:30:58,764 - trainer.py[line:26] - INFO: Running with identifier 20220118_103058
-2022-01-18 10:30:58,764 - trainer.py[line:28] - INFO: Saving log to log\simi_final_gaussian_noise_with_blur\20220118_103058\run.log
-2022-01-18 10:30:58,764 - trainer.py[line:29] - INFO: Using args: [('log_name', 'simi_final_gaussian_noise_with_blur'), ('data_train', 'dataset/gaussian_noise_with_blur'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
-2022-01-18 10:30:58,767 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\simi_final_gaussian_noise_with_blur\20220118_103058
-2022-01-18 10:30:58,768 - trainer.py[line:41] - INFO: Using training data: dataset/gaussian_noise_with_blur
-2022-01-18 10:30:58,768 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name simi_final_gaussian_noise_with_blur --identifier 20220118_103058 --output_checkpoint_dir checkpoint --data_dir dataset/gaussian_noise_with_blur
-2022-01-18 10:32:00,944 - trainer.py[line:59] - INFO: Keyboard Interrupt

@@ -1,9 +1,0 @@
-2022-01-18 20:02:13,893 - trainer.py[line:26] - INFO: Running with identifier 20220118_200213
-2022-01-18 20:02:13,893 - trainer.py[line:28] - INFO: Saving log to log\semi_final_gaussian_train\20220118_200213\run.log
-2022-01-18 20:02:13,893 - trainer.py[line:29] - INFO: Using args: [('log_name', 'semi_final_gaussian_train'), ('data_train', 'dataset/semi_final_gaussian_train'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
-2022-01-18 20:02:13,895 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\semi_final_gaussian_train\20220118_200213
-2022-01-18 20:02:13,896 - trainer.py[line:41] - INFO: Using training data: dataset/semi_final_gaussian_train
-2022-01-18 20:02:13,897 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name semi_final_gaussian_train --identifier 20220118_200213 --output_checkpoint_dir checkpoint --data_dir dataset/semi_final_gaussian_train
-2022-01-18 20:02:13,897 - train.py[line:62] - WARNING: Dataset not found, searching renamed-dataset......
-2022-01-18 20:02:13,897 - train.py[line:66] - WARNING: Multi-implementation of data.npy and label.npy!
-2022-01-18 20:02:13,897 - trainer.py[line:55] - ERROR: 

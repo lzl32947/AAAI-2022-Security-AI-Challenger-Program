@@ -1,3 +1,0 @@
-2021-11-28 21:30:20,103 - main.py[line:24] - INFO: Running with identifier 20211128_213020
-2021-11-28 21:30:20,103 - main.py[line:26] - INFO: Saving log to log\cifar10\20211128_213020\run.log
-2021-11-28 21:31:17,993 - main.py[line:38] - ERROR: Unable to find a valid cuDNN algorithm to run convolution

@@ -1,3 +1,0 @@
-2021-11-28 21:22:28,820 - main.py[line:24] - INFO: Running with identifier 20211128_212228
-2021-11-28 21:22:28,820 - main.py[line:26] - INFO: Saving log to log\cifar10\20211128_212228\run.log
-2021-11-28 21:23:23,763 - main.py[line:38] - ERROR: 'DataLoader' object has no attribute 'eval'

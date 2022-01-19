@@ -1,8 +1,0 @@
-2022-01-18 20:02:29,351 - trainer.py[line:26] - INFO: Running with identifier 20220118_200229
-2022-01-18 20:02:29,351 - trainer.py[line:28] - INFO: Saving log to log\semi_final_gaussian_train\20220118_200229\run.log
-2022-01-18 20:02:29,351 - trainer.py[line:29] - INFO: Using args: [('log_name', 'semi_final_gaussian_train'), ('data_train', 'dataset/semi_final_gaussian_train'), ('data_eval', None), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 20), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
-2022-01-18 20:02:29,353 - trainer.py[line:40] - INFO: Using tensorboard, store at: tensorboard\semi_final_gaussian_train\20220118_200229
-2022-01-18 20:02:29,354 - trainer.py[line:41] - INFO: Using training data: dataset/semi_final_gaussian_train
-2022-01-18 20:02:29,354 - trainer.py[line:43] - INFO: Pack this file using this command if training finished: --log_dir log --log_name semi_final_gaussian_train --identifier 20220118_200229 --output_checkpoint_dir checkpoint --data_dir dataset/semi_final_gaussian_train
-2022-01-18 22:14:56,062 - train.py[line:216] - INFO: Best acc in training: 100.00
-2022-01-19 01:00:50,557 - train.py[line:216] - INFO: Best acc in training: 100.00

@@ -1,8 +1,0 @@
-2021-12-07 11:27:52,793 - trainer.py[line:25] - INFO: Running with identifier 20211207_112752
-2021-12-07 11:27:52,793 - trainer.py[line:27] - INFO: Saving log to log\gaussian_test\20211207_112752\run.log
-2021-12-07 11:27:52,793 - trainer.py[line:28] - INFO: Using args: [('log_name', 'gaussian_test'), ('data_train', 'dataset/gaussian_test_train'), ('data_eval', 'dataset/gaussian_test_eval'), ('output_checkpoint_dir', 'checkpoint'), ('eval_per_epoch', 10), ('log_dir', 'log'), ('tf_dir', 'tensorboard'), ('output_dir', 'output'), ('not_ignore_warning', False), ('enable_tensorboard', True), ('pack', False)]
-2021-12-07 11:27:52,796 - trainer.py[line:39] - INFO: Using tensorboard, store at: tensorboard\gaussian_test\20211207_112752
-2021-12-07 11:27:52,796 - trainer.py[line:40] - INFO: Using training data: dataset/gaussian_test_train
-2021-12-07 11:27:52,796 - trainer.py[line:42] - INFO: Pack this file using this command if training finished: --log_dir log --log_name gaussian_test --identifier 20211207_112752 --output_checkpoint_dir checkpoint --data_dir dataset/gaussian_test_train
-2021-12-07 11:27:52,796 - train.py[line:128] - INFO: Running model resnet50
-2021-12-07 11:30:12,829 - trainer.py[line:54] - ERROR: Unable to find a valid cuDNN algorithm to run convolution

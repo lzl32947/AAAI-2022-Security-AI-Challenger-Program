@@ -1,3 +1,0 @@
-2021-11-28 21:33:00,056 - main.py[line:24] - INFO: Running with identifier 20211128_213300
-2021-11-28 21:33:00,056 - main.py[line:26] - INFO: Saving log to log\cifar10\20211128_213300\run.log
-2021-11-28 21:36:31,745 - main.py[line:42] - INFO: Keyboard Interrupt
