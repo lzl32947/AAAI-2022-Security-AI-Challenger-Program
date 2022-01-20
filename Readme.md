@@ -1,6 +1,6 @@
-# AAAI-2022 Security AI Challenger Program
+# Ali AAAI-2022 Security AI Challenger Program
 
-This is the repo for Aaai-2022 security AI Challenger program phase VIII.
+This is the repo for Ali AAAI-2022 security AI Challenger program phase VIII(AAAI2022 安全AI挑战者计划第八期).
 
 ## Base
 
