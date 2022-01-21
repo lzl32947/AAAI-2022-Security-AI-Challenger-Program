@@ -2,6 +2,10 @@
 
 This is the repo for Ali AAAI-2022 security AI Challenger program phase VIII(AAAI2022 安全AI挑战者计划第八期).
 
+## Score
+Preliminary: 26/3691
+Finals: 22/50
+
 ## Base
 
 The files in ```base``` directory is the original directory for baseline files, and can be found
