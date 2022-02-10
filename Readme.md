@@ -4,7 +4,8 @@ This is the repo for Ali AAAI-2022 security AI Challenger program phase VIII(AAA
 
 ## Score
 Preliminary: 26/3691
-Finals: 22/50
+
+Finals: 19/50
 
 ## Base
 
